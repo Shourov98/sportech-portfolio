@@ -1,12 +1,25 @@
 import HeroSection from "@/components/hero/HeroSection";
-import NavBar from "@/components/nav/NavBar";
-import Image from "next/image";
+import ContactSection from "@/components/sections/ContactSection";
+import PartnersSection from "@/components/sections/PartnersSection";
+import ServicesSection from "@/components/sections/ServiceSection";
+import ValuesSection from "@/components/sections/ValueSection";
 
-export default function Home() {
+const logos = [
+  { name: "Athlete Lab", src: "/partners/image1.png" },
+  { name: "Playtech", src: "/partners/image2.png" },
+  { name: "Fanatics", src: "/partners/image3.png" },
+  { name: "GameChanger", src: "/partners/image4.png" },
+];
+<PartnersSection logos={logos} />;
+
+export default function Page() {
   return (
-    <div>
-      <NavBar />
+    <>
       <HeroSection />
-    </div>
+      <ValuesSection />
+      <PartnersSection logos={logos} />
+      <ServicesSection />
+      <ContactSection />
+    </>
   );
 }

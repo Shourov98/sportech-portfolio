@@ -27,14 +27,16 @@ body {
 }
 /* Artboard reference size (from Figma) */
 /* The scaled, centered artboard that carries all background SVGs */
+.hero-stage {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Centered artboard that scales only down */
 .hero-artboard {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 1440px; /* Figma width  */
-  height: 1024px; /* Figma height */
-  transform-origin: top center;
-  transform: translateX(-50%) scale(var(--hero-scale));
-  pointer-events: none; /* background only */
-  user-select: none;
+  width: 1440px;
+  height: 1024px;
+  transform-origin: top center; /* center horizontally */
+  transform: scale(var(--hero-scale, 1));
+  margin: 0 auto; /* keep centered */
 }
