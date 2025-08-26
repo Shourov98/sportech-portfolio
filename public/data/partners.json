@@ -1,0 +1,54 @@
+[
+  {
+    "id": "gamechanger-studio",
+    "name": "Game Changer studio",
+    "logo": "/partners/gamechanger.png",
+    "short_description": "Our Game Changer Studio is where ideas turn into groundbreaking sports innovations. From concept to execution, we craft cutting-edge digital experiences that redefine the future of sports.",
+    "description": "Game Changer Studio is a creative and technology-driven team dedicated to redefining gaming and sports experiences. With designers, developers, and strategists working closely together, they build innovative, immersive products that captivate users across platforms.\n\nAs a trusted partner, Game Changer Studio blends interactive storytelling, UX craft, and modern engineering to turn visionary ideas into engaging, memorable experiences. By combining cutting-edge tools with bold concepts, they consistently deliver beyond expectations.\n\nThrough this collaboration, we create unique solutions, enhance gameplay and fan engagement, and push the boundaries of what’s possible. Game Changer Studio is more than a partner—they are a catalyst for innovation and a key contributor to our shared success.",
+    "website": "#",
+    "links": {
+      "google_play": "#",
+      "app_store": "#",
+      "app_gallery": "#"
+    }
+  },
+  {
+    "id": "playtech",
+    "name": "Playtech",
+    "logo": "/partners/playtech.png",
+    "short_description": "Playtech is where sports meet cutting-edge technology. We develop interactive platforms and immersive solutions that transform how fans engage, teams perform, and the game evolves.",
+    "description": "Playtech builds robust, data-driven platforms that power modern fan engagement and team performance. From scalable content systems to analytics and realtime interactivity, our solutions help clubs and rights-holders deliver richer experiences across web and mobile. We combine UX craft with secure, cloud-native infrastructure so partners can launch faster, learn quickly, and grow confidently.\n\nWith an ecosystem of APIs and integrations, Playtech connects ticketing, memberships, commerce, and media into one seamless experience—so every interaction becomes insightful, measurable, and more valuable over time.",
+    "website": "#",
+    "links": {
+      "google_play": "#",
+      "app_store": "#",
+      "app_gallery": "#"
+    }
+  },
+  {
+    "id": "fanatics",
+    "name": "Fanatics",
+    "logo": "/partners/fanatics.png",
+    "short_description": "Fanatics represents the ultimate passion and dedication of sports enthusiasts. From exclusive merchandise to unforgettable experiences, we bring fans closer to the teams and moments they love.",
+    "description": "Fanatics connects global fan communities with premium products and experiences. By pairing official merchandise with digital engagement, Fanatics turns everyday moments into lasting memories. Their operations, logistics, and commerce technology ensure fans receive authentic gear quickly and reliably, while their content and activations deepen loyalty across seasons.\n\nTogether we create programs that celebrate clubs, athletes, and culture—making fandom more accessible and more meaningful for everyone.",
+    "website": "#",
+    "links": {
+      "google_play": "#",
+      "app_store": "#",
+      "app_gallery": "#"
+    }
+  },
+  {
+    "id": "athlete-lab",
+    "name": "ATHLETE LAB",
+    "logo": "/partners/athlete-lab.png",
+    "short_description": "Our Athlete Lab is dedicated to enhancing performance through technology, analytics, and innovation—helping athletes train smarter, recover faster, and achieve their full potential.",
+    "description": "Athlete Lab combines sports science, data analytics, and cutting-edge technology to optimize athlete performance. By leveraging wearable tech, AI-driven insights, and personalized training programs, Athlete Lab empowers athletes to reach new heights. Their holistic approach integrates physical conditioning, mental resilience, and recovery strategies to ensure peak performance on and off the field.\n\nThrough this partnership, we deliver innovative solutions that enhance training efficiency, reduce injury risk, and foster long-term athletic development.",
+    "website": "#",
+    "links": {
+      "google_play": "#",
+      "app_store": "#",
+      "app_gallery": "#"
+    }
+  }
+]

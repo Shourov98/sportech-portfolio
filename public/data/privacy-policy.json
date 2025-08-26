@@ -1,0 +1,62 @@
+{
+  "title": "Privacy Policy",
+  "subtitle": "At SporTech, we value your privacy. We collect only necessary information to provide our services, keep it secure, and never share it without your consent.",
+  "sections": [
+    {
+      "title": "1. Introduction",
+      "description": [
+        "SporTech (\"we\", \"our\", or \"us\") is committed to protecting your privacy.",
+        "This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website sportech.com.sa."
+      ]
+    },
+    {
+      "title": "2. Information We Collect",
+      "description": [
+        "Personal Information: Name, email address, phone number, and other details you provide through contact forms.",
+        "Non-Personal Information: Browser type, device information, IP address, and usage data collected automatically through cookies or similar technologies."
+      ]
+    },
+    {
+      "title": "3. How We Use Your Information",
+      "description": [
+        "Providing and improving our services",
+        "Responding to inquiries and customer support requests",
+        "Sending updates and promotional content (only if you consent)",
+        "Analyzing website performance and usage trends"
+      ]
+    },
+    {
+      "title": "4. Cookies and Tracking Technologies",
+      "description": [
+        "Our website may use cookies and similar tracking tools to enhance user experience, improve website functionality, and analyze traffic.",
+        "You can choose to disable cookies in your browser settings, but some site features may not work properly."
+      ]
+    },
+    {
+      "title": "5. Sharing Your Information",
+      "description": [
+        "We do not sell or rent your personal information to third parties.",
+        "We may share data only with: service providers assisting us in website operation; and legal authorities, if required by law."
+      ]
+    },
+    {
+      "title": "6. Data Security",
+      "description": [
+        "We implement appropriate technical and organizational measures to protect your personal data from unauthorized access, disclosure, or loss."
+      ]
+    },
+    {
+      "title": "9. Changes to This Policy",
+      "description": [
+        "We may update this Privacy Policy from time to time. Changes will be posted on this page with the updated date."
+      ]
+    },
+    {
+      "title": "10. Contact Us",
+      "description": [
+        "If you have any questions about this Privacy Policy, please contact us at:",
+        "Email: contact@sportech.com.sa"
+      ]
+    }
+  ]
+}
