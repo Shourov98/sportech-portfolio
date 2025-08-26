@@ -2,26 +2,27 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import Earth3D from "../Earth3D";
 
 const container = {
   hidden: {},
   show: {
-    transition: { staggerChildren: 0.22, delayChildren: 0.18 }, // slower sequence
+    transition: { staggerChildren: 0.22, delayChildren: 0.18 },
   },
 };
 
 const item = {
-  hidden: { opacity: 0, x: -120 }, // shorter travel helps smoothness; use -160 if you want more
+  hidden: { opacity: 0, x: -120 },
   show: {
     opacity: 1,
     x: 0,
     transition: {
       type: "spring",
-      stiffness: 110, // ↓ lower = softer/slower
-      damping: 30, // ↑ higher = less wobble, smoother settle
-      mass: 1.1, // ↑ slightly heavier = slower accel
-      bounce: 0.2, // tiny overshoot; set 0 for none
-      restDelta: 0.001, // finish cleanly
+      stiffness: 110,
+      damping: 30,
+      mass: 1.1,
+      bounce: 0.2,
+      restDelta: 0.001,
     },
   },
 };
@@ -40,11 +41,10 @@ export default function HeroSection() {
         />
         {/* Globe */}
         <div
-          className="pointer-events-none absolute -z-10
-              left-[480px] top-[481px] w-[509px] h-[509px]"
+          className="pointer-events-auto absolute z-0 left-1/2 top-[481px] w-[509px] h-[509px] max-w-full -translate-x-1/2"
           aria-hidden="true"
         >
-          <img src="/home/globe.svg" alt="Globe" className="object-contain" />
+          <Earth3D />
         </div>
       </div>
 

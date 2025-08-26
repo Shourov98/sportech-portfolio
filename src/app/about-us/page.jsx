@@ -3,6 +3,8 @@ import PartnersStrip from "@/components/PartnersStrip";
 import ObjectivesSection from "@/components/sections/ObjectivesSection";
 import AboutValueSection from "@/components/sections/AboutValueSection";
 import TeamSection from "@/components/sections/TeamSection";
+import FeedbackSection from "@/components/sections/FeedbackSection";
+import FAQSection from "@/components/sections/FAQSection";
 
 const logos = [
   { src: "/partners/image1.png", alt: "Athlete Lab" },
@@ -22,6 +24,8 @@ export default function AboutPage() {
       <ObjectivesSection />
       <AboutValueSection />
       <TeamSection />
+      <FeedbackSection />
+      <FAQSection />
     </>
   );
 }
