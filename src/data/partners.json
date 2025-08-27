@@ -50,5 +50,18 @@
       "app_store": "#",
       "app_gallery": "#"
     }
+  },
+  {
+    "id": "sportspro",
+    "name": "SportsPro",
+    "logo": "/partners/sportspro.png",
+    "short_description": "SportsPro empowers athletes and fans alike with expert insights, cutting-edge gear, and unforgettable experiences—bringing performance and passion together to make every moment on the field count.",
+    "description": "SportsPro partners with clubs, athletes, and brands to elevate performance and engagement. Blending deep editorial expertise with live events, digital content, and community activations, SportsPro helps organizations reach global audiences and create lasting impact. Their approach combines data-led insight, product curation, and storytelling to translate passion into measurable outcomes.\n\nTogether, we build programs that celebrate sport, connect fans, and support athletes—uniting technology, content, and commerce to deliver meaningful experiences across every touchpoint.",
+    "website": "#",
+    "links": {
+      "google_play": "#",
+      "app_store": "#",
+      "app_gallery": "#"
+    }
   }
 ]

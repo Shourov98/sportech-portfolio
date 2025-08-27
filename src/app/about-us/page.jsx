@@ -6,14 +6,22 @@ import TeamSection from "@/components/sections/TeamSection";
 import FeedbackSection from "@/components/sections/FeedbackSection";
 import FAQSection from "@/components/sections/FAQSection";
 
-const logos = [
-  { src: "/partners/image1.png", alt: "Athlete Lab" },
-  { src: "/partners/image2.png", alt: "Playtech" },
-  { src: "/partners/image3.png", alt: "Fanatics" },
-  { src: "/partners/image4.png", alt: "GameChanger Studio" },
-];
+// ✅ Import your JSON (Next.js supports JSON imports in app dir)
+import partners from "@/data/partners.json"; // [{ id, name, logo, ... }]
+
+// Make sure we only pass { name, src } and remove duplicates by id
+function toLogos(data) {
+  const seen = new Set();
+  return data.reduce((acc, p) => {
+    if (!p?.logo || !p?.name || seen.has(p.id)) return acc;
+    seen.add(p.id);
+    acc.push({ name: p.name, src: p.logo });
+    return acc;
+  }, []);
+}
 
 export default function AboutPage() {
+  const logos = toLogos(partners);
   return (
     <>
       {/* your Navbar is already global */}

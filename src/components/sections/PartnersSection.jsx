@@ -9,7 +9,7 @@ import Image from "next/image";
  * - Marquee block remains commented
  */
 export default function PartnersSection({ logos = [] }) {
-  const firstFour = logos.slice(0, 4);
+  const firstFour = logos.slice(0, 5);
   const containerRef = useRef(null);
   const inView = useInView(containerRef, { once: true, margin: "-20% 0px" });
 
@@ -59,7 +59,7 @@ export default function PartnersSection({ logos = [] }) {
               animate={inView ? "show" : "hidden"}
               className="grid grid-cols-2 gap-4 sm:grid-cols-4"
             >
-              {firstFour.map((p) => (
+              {logos.map((p) => (
                 <motion.li
                   key={p.name || p}
                   variants={item}
