@@ -1,6 +1,7 @@
 // src/components/ServicesSection.jsx
 "use client";
 
+import { slugify } from "../../data/services";
 import AnimatedSwapButton from "../AnimatedSwapButton";
 
 export default function ServicesSection({
@@ -123,8 +124,13 @@ export function ServiceCard({
         )}
 
         {/* CTA pinned to bottom */}
-        <div className="mt-auto pt-5 justify-center items-center">
-          <AnimatedSwapButton href="#">{buttonLabel}</AnimatedSwapButton>
+        <div className="mt-auto pt-5">
+          <AnimatedSwapButton
+            href={`/service/${slugify(title)}`}
+            className="w-full"
+          >
+            {buttonLabel}
+          </AnimatedSwapButton>
         </div>
 
         {/* <div className="mt-auto pt-5">
