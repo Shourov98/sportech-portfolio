@@ -1,62 +1,101 @@
-export default function ServicesSection({ services = defaultServices }) {
+// src/components/ServicesSection.jsx
+"use client";
+
+import AnimatedSwapButton from "../AnimatedSwapButton";
+
+export default function ServicesSection({
+  services = defaultServices,
+
+  // Header
+  title = "Services & Solutions", // can be string OR JSX
+  subtitle = "Comprehensive Digital Sports Solutions",
+  description, // optional extra blurb
+
+  // Footer CTAs: [{ label, href, onClick }] – order matters
+  footerCtas = [{ label: "See More", href: "#" }],
+
+  // Styling hooks
+  bgClass = "bg-[#262626]",
+  containerClass = "",
+  gridClass = "md:grid-cols-2 lg:grid-cols-3", // override columns per page
+  sectionClass = "",
+
+  // Card customization
+  cardButtonLabel = "View Details",
+}) {
   return (
     <section
       id="services"
-      className="relative bg-[#262626] py-16 sm:py-20 lg:py-28"
+      className={`relative ${bgClass} py-16 sm:py-20 lg:py-28 ${sectionClass}`}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div
+        className={`mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ${containerClass}`}
+      >
         {/* Heading */}
         <div className="text-center">
           <h2 className="font-bold text-[#e4ff25] tracking-tight text-[clamp(28px,5vw,56px)]">
-            Services & Solutions
+            {title}
           </h2>
-          <p className="mt-2 text-[clamp(14px,2.6vw,18px)] text-white/80">
-            Comprehensive Digital Sports Solutions
-          </p>
-          <p className="mx-auto mt-4 max-w-3xl text-[clamp(13px,2.2vw,16px)] leading-7 text-white/75">
-            We offer a variety of tech solutions tailored to meet the needs of
-            sports clubs and fans, ensuring the highest standards of quality and
-            security.
-          </p>
+
+          {subtitle && (
+            <p className="mt-2 text-[clamp(14px,2.6vw,18px)] text-white/80">
+              {subtitle}
+            </p>
+          )}
+
+          {!!description && (
+            <p className="mx-auto mt-4 max-w-3xl text-[clamp(13px,2.2vw,16px)] leading-7 text-white/75">
+              {description}
+            </p>
+          )}
         </div>
 
         {/* Grid */}
-        <div className="mt-10 grid grid-cols-1 items-stretch gap-6 sm:gap-7 md:grid-cols-2 lg:grid-cols-3">
+        <div
+          className={`mt-10 grid grid-cols-1 items-stretch gap-6 sm:gap-7 ${gridClass}`}
+        >
           {services.map((s) => (
-            <ServiceCard key={s.title} {...s} />
+            <ServiceCard key={s.title} {...s} buttonLabel={cardButtonLabel} />
           ))}
         </div>
 
-        {/* See more */}
-        <div className="mt-10 sm:mt-12 flex justify-center">
-          <a
-            href="#"
-            className="inline-flex items-center gap-3 rounded-2xl bg-[#e4ff25] px-6 py-3 text-base font-semibold text-black shadow-[0_8px_30px_rgba(0,0,0,0.25)] transition hover:brightness-95"
-          >
-            See More
-            <span className="ml-1 grid size-7 place-items-center rounded-xl bg-black/85 text-white">
-              »
-            </span>
-          </a>
-        </div>
+        {/* Footer CTAs */}
+        {footerCtas?.length > 0 && (
+          <div className="mt-10 sm:mt-12 flex flex-wrap justify-center gap-3">
+            {footerCtas.map((cta, i) => {
+              const Btn = (
+                <AnimatedSwapButton key={i} href="#contact-us">
+                  {cta.label}
+                </AnimatedSwapButton>
+              );
+              return Btn;
+            })}
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
-function ServiceCard({ title, excerpt, icon, bullets, width, height }) {
+export function ServiceCard({
+  title,
+  excerpt,
+  icon,
+  bullets,
+  width,
+  height,
+  buttonLabel = "View Details",
+  buttonHref = "#",
+}) {
   return (
     <article className="flex h-full flex-col rounded-2xl bg-white ring-4 ring-white/90 shadow-md transition hover:shadow-xl">
       <div className="flex h-full flex-col p-4 sm:p-5">
-        {/* Icon panel (full width, responsive height, icon perfectly centered) */}
+        {/* Icon panel */}
         <div className="mb-4 w-full rounded-xl bg-[#262626] p-4 sm:p-6">
-          {/* Keep a consistent visual height using an aspect box */}
           <div className="relative w-full aspect-[328/191] grid place-items-center">
-            {/* Your SVG */}
             <img
               src={icon}
               alt=""
-              /* If width/height are passed, they’ll be used, but never overflow */
               width={width}
               height={height}
               className="block max-h-[80%] max-w-[80%] object-contain"
@@ -84,23 +123,27 @@ function ServiceCard({ title, excerpt, icon, bullets, width, height }) {
         )}
 
         {/* CTA pinned to bottom */}
-        <div className="mt-auto pt-5">
+        <div className="mt-auto pt-5 justify-center items-center">
+          <AnimatedSwapButton href="#">{buttonLabel}</AnimatedSwapButton>
+        </div>
+
+        {/* <div className="mt-auto pt-5">
           <a
-            href="#"
+            href={buttonHref}
             className="inline-flex w-full items-center justify-between rounded-xl bg-[#e4ff25] px-5 py-2 font-semibold text-black transition hover:brightness-95"
           >
-            <span>View Details</span>
+            <span>{buttonLabel}</span>
             <span className="ml-2 inline-grid size-6 place-items-center rounded-md bg-black/85 text-white">
               »
             </span>
           </a>
-        </div>
+        </div> */}
       </div>
     </article>
   );
 }
 
-/* ------- Demo data (replace as needed) ------- */
+/* ------- Demo data (replace/extend as needed) ------- */
 const defaultServices = [
   {
     title: "Subscription Management Platform",

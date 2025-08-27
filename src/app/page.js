@@ -18,7 +18,13 @@ export default function Page() {
       <HeroSection />
       <ValuesSection />
       <PartnersSection logos={logos} />
-      <ServicesSection />
+      <ServicesSection
+        title="Services & Solutions"
+        subtitle="Comprehensive Digital Sports Solutions"
+        description="We offer a variety of tech solutions tailored to meet the needs of sports clubs and fans, ensuring the highest standards of quality and security."
+        footerCtas={[{ label: "See More", href: "/services#all" }]}
+        gridClass="md:grid-cols-2 lg:grid-cols-3"
+      />
       <ContactSection />
     </>
   );

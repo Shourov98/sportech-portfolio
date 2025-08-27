@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 export default function Earth3D() {
   const mountRef = useRef(null);
@@ -11,24 +10,14 @@ export default function Earth3D() {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000); // Square aspect ratio
     camera.position.set(0, 0, 4);
+
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(window.devicePixelRatio);
 
     // Set initial size
     const size = Math.min(window.innerWidth, 509); // Match original 509px size, adjust for responsiveness
     renderer.setSize(size, size);
-    mountRef.current.appendChild(renderer.domElement);
-
-    // Orbit controls
-    const orbitCtrl = new OrbitControls(camera, renderer.domElement);
-    orbitCtrl.enableDamping = true;
-    orbitCtrl.enableZoom = false; // Disable zoom to keep size fixed
-    orbitCtrl.enablePan = false; // Disable panning for simplicity
-
-    // Raycaster for interaction
-    const raycaster = new THREE.Raycaster();
-    const pointerPos = new THREE.Vector2();
-    const globeUV = new THREE.Vector2();
+    if (mountRef.current) mountRef.current.appendChild(renderer.domElement);
 
     // Load textures
     const textureLoader = new THREE.TextureLoader();
@@ -56,7 +45,7 @@ export default function Earth3D() {
     const detail = 120;
     const pointsGeo = new THREE.IcosahedronGeometry(1, detail);
 
-    // Shaders
+    // Shaders (unchanged, but mouseUV is fixed so no interaction)
     const vertexShader = `
       uniform float size;
       uniform sampler2D elevTexture;
@@ -108,6 +97,8 @@ export default function Earth3D() {
         gl_FragColor = vec4(color, alpha);
       }
     `;
+
+    // Uniforms: mouseUV stays constant (no interactivity)
     const uniforms = {
       size: { value: 4.0 },
       colorTexture: { value: colorMap },
@@ -116,6 +107,7 @@ export default function Earth3D() {
       alphaTexture: { value: alphaMap },
       mouseUV: { value: new THREE.Vector2(0.0, 0.0) },
     };
+
     const pointsMat = new THREE.ShaderMaterial({
       uniforms,
       vertexShader,
@@ -130,34 +122,14 @@ export default function Earth3D() {
     const hemiLight = new THREE.HemisphereLight(0xffffff, 0x080820, 3);
     scene.add(hemiLight);
 
-    // Raycasting for mouse interaction
-    const handleRaycast = () => {
-      raycaster.setFromCamera(pointerPos, camera);
-      const intersects = raycaster.intersectObjects([globe], false);
-      if (intersects.length > 0) {
-        globeUV.copy(intersects[0].uv);
-      }
-      uniforms.mouseUV.value = globeUV;
-    };
-
-    // Animation loop
+    // Animation loop (auto-rotate only; no controls/raycast)
+    let rafId = 0;
     const animate = () => {
       renderer.render(scene, camera);
       globeGroup.rotation.y += 0.002;
-      handleRaycast();
-      orbitCtrl.update();
-      requestAnimationFrame(animate);
+      rafId = requestAnimationFrame(animate);
     };
     animate();
-
-    // Mouse move handler
-    const onMouseMove = (evt) => {
-      pointerPos.set(
-        (evt.clientX / window.innerWidth) * 2 - 1,
-        -(evt.clientY / window.innerHeight) * 2 + 1
-      );
-    };
-    window.addEventListener("mousemove", onMouseMove);
 
     // Resize handler
     const onResize = () => {
@@ -170,10 +142,23 @@ export default function Earth3D() {
 
     // Cleanup
     return () => {
-      window.removeEventListener("mousemove", onMouseMove);
+      cancelAnimationFrame(rafId);
       window.removeEventListener("resize", onResize);
-      mountRef.current.removeChild(renderer.domElement);
+      if (
+        mountRef.current &&
+        renderer.domElement.parentElement === mountRef.current
+      ) {
+        mountRef.current.removeChild(renderer.domElement);
+      }
       renderer.dispose();
+      geo.dispose();
+      pointsGeo.dispose();
+      mat.dispose();
+      pointsMat.dispose();
+      colorMap.dispose();
+      otherMap.dispose();
+      elevMap.dispose();
+      alphaMap.dispose();
     };
   }, []);
 
