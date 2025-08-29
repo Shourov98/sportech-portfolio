@@ -1,8 +1,9 @@
+// src/app/partners/[id]/page.jsx
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import partners from "@/data/partners.json" assert { type: "json" };
 
-/* Helpers */
+/* ---------- Helpers ---------- */
 function getPartner(id) {
   return (partners || []).find((p) => p.id === id);
 }
@@ -10,17 +11,17 @@ function getPartner(id) {
 function splitParagraphs(text) {
   if (!text) return [];
   return text
-    .split(/\n\s*\n/g) // split by blank line
+    .split(/\n\s*\n/g) // split by blank line(s)
     .map((t) => t.trim())
     .filter(Boolean);
 }
 
-/* Pre-render all partner ids */
+/* ---------- Static params for prerender ---------- */
 export function generateStaticParams() {
   return (partners || []).map((p) => ({ id: p.id }));
 }
 
-/* SEO */
+/* ---------- SEO ---------- */
 export function generateMetadata({ params }) {
   const p = getPartner(params.id);
   if (!p) return { title: "Partner not found" };
@@ -30,6 +31,7 @@ export function generateMetadata({ params }) {
   };
 }
 
+/* ---------- Page ---------- */
 export default function PartnerDetailPage({ params }) {
   const p = getPartner(params.id);
   if (!p) notFound();
@@ -38,59 +40,67 @@ export default function PartnerDetailPage({ params }) {
 
   return (
     <main className="bg-[#262626] text-white">
-      {/* HERO */}
-      <section className="relative isolate overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          {/* subtle gradient glow like the mock */}
-          <div className="absolute inset-0 bg-[radial-gradient(90%_60%_at_50%_0%,rgba(237,249,0,0.18),transparent_60%)]" />
-        </div>
+      {/* HERO (same geometry as Terms page: 423px) */}
+      <section className="relative isolate h-[423px] overflow-hidden">
+        {/* Background image — use your shared hero, e.g. /gradient.svg */}
+        <Image
+          src="/gradient.svg"
+          alt=""
+          fill
+          priority
+          className="pointer-events-none select-none object-cover object-center"
+        />
+        {/* optional soft overlay for readability */}
+        <div className="absolute inset-0 bg-black/15" />
 
-        <div className="mx-auto max-w-6xl px-4 py-12 sm:py-16 lg:py-20 text-center">
-          <h1 className="text-[clamp(26px,5vw,40px)] font-extrabold tracking-tight">
-            {p.name}
-          </h1>
-          {p.tagline && (
-            <p className="mt-2 text-white/90 text-[clamp(14px,2.4vw,18px)]">
-              {p.tagline}
-            </p>
-          )}
+        <div className="relative z-10 mx-auto flex h-full max-w-6xl items-center justify-center px-4 text-center">
+          <div>
+            <h1 className="text-[clamp(26px,5vw,40px)] font-extrabold tracking-tight">
+              {p.name}
+            </h1>
+            {p.tagline && (
+              <p className="mt-2 text-white/90 text-[clamp(14px,2.4vw,18px)]">
+                {p.tagline}
+              </p>
+            )}
+          </div>
         </div>
       </section>
 
-      {/* CONTENT */}
-      <section className="relative pb-16 sm:pb-20 lg:pb-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid grid-cols-1 gap-8 md:grid-cols-12">
+      {/* CONTENT (pushed down a bit for nicer rhythm under the hero) */}
+      <section className="relative pt-10 sm:pt-12 lg:pt-16 pb-16 sm:pb-20 lg:pb-24">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 sm:px-6 lg:grid-cols-12 lg:px-8">
           {/* LEFT: info card */}
-          <aside className="md:col-span-5">
-            <div className="rounded-2xl bg-white text-[#1b1d1e] shadow ring-1 ring-black/10 overflow-hidden">
+          <aside className="lg:col-span-5">
+            <div className="overflow-hidden rounded-2xl bg-white text-[#1b1d1e] shadow ring-1 ring-black/10">
+              {/* Logo */}
               <div className="grid place-items-center bg-white px-6 pt-6">
                 <Image
                   src={p.logo}
                   alt={p.name}
                   width={380}
                   height={140}
-                  className="max-h-24 w-auto object-contain"
-                  priority={false}
+                  className="w-auto max-h-24 object-contain"
                 />
               </div>
 
-              <div className="px-6 pb-6 pt-4 space-y-5">
+              <div className="space-y-5 px-6 pb-6 pt-4">
                 {/* Visit website */}
                 {p.website && p.website !== "#" && (
                   <a
                     href={p.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-xl bg-[#EDF900] px-5 py-2 font-semibold text-black shadow hover:brightness-95"
+                    className="inline-flex items-center gap-2 rounded-xl bg-[#EDF900] px-5 py-2 font-semibold text-black shadow transition hover:brightness-95"
                   >
-                    Visit Website{" "}
+                    Visit Website
                     <span className="inline-grid size-5 place-items-center rounded-md bg-black/85 text-white">
                       »
                     </span>
                   </a>
                 )}
 
-                {/* Optional extra fields if you add them to JSON */}
+                {/* Optional fields if present in JSON */}
                 {p.specialization && (
                   <div>
                     <h4 className="font-semibold">Specialization</h4>
@@ -158,8 +168,8 @@ export default function PartnerDetailPage({ params }) {
           </aside>
 
           {/* RIGHT: description */}
-          <div className="md:col-span-7">
-            <h2 className="text-[clamp(18px,3vw,24px)] font-extrabold mb-4">
+          <div className="lg:col-span-7">
+            <h2 className="mb-4 text-[clamp(18px,3vw,24px)] font-extrabold">
               About Partner
             </h2>
 

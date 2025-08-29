@@ -1,5 +1,6 @@
 // Server Component (no "use client")
 import policy from "@/data/privacy-policy.json";
+import Image from "next/image";
 
 export const metadata = {
   title: "Privacy Policy — SporTech",
@@ -28,12 +29,17 @@ export default function PrivacyPolicyPage() {
     <main className="bg-[#262626] text-white">
       {/* HERO */}
       <section className="relative isolate overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-[radial-gradient(90%_60%_at_50%_0%,rgba(237,249,0,0.22),transparent_60%)]" />
-        </div>
+        {/* Background image (SVG/PNG) */}
+        <Image
+          src="/gradient.svg"
+          alt=""
+          fill
+          priority
+          className="object-cover object-center pointer-events-none select-none"
+        />
 
         <div className="mx-auto max-w-6xl px-4 py-12 sm:py-16 lg:py-20 text-center">
-          <h1 className="text-[clamp(28px,6vw,44px)] font-extrabold tracking-tight">
+          <h1 className="pt-10 text-[clamp(28px,6vw,44px)] font-extrabold tracking-tight">
             {policy.title}
           </h1>
           {policy.subtitle && (
@@ -45,7 +51,7 @@ export default function PrivacyPolicyPage() {
       </section>
 
       {/* BODY */}
-      <section className="pb-16 sm:pb-20 lg:pb-24">
+      <section className="py-16 sm:pb-20 lg:pb-24">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 space-y-9">
           {policy.sections?.map((sec) => {
             // Support both schemas:

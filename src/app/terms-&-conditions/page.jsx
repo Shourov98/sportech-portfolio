@@ -1,4 +1,5 @@
 // src/app/terms-and-conditions/page.jsx
+import Image from "next/image";
 import terms from "@/data/terms-and-conditions.json";
 
 // SEO
@@ -17,38 +18,49 @@ function slugify(text = "") {
     .trim();
 }
 
-// Sections that should display as bullet lists
 const BULLET_SECTIONS = new Set(["3. User Responsibilities"]);
+
+// <<<—— Adjust this path to your asset if different
+const HERO_SVG = "/terms/terms-hero.svg";
 
 export default function TermsAndConditionsPage() {
   return (
     <main className="bg-[#262626] text-white">
-      {/* HERO */}
-      <section className="relative isolate overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 -z-10">
-          {/* soft green halo */}
-          <div className="absolute inset-0 bg-[radial-gradient(90%_60%_at_50%_0%,rgba(237,249,0,0.22),transparent_60%)]" />
-        </div>
+      {/* HERO with SVG background */}
+      <section className="relative isolate h-[423px] overflow-hidden">
+        {/* Background image (SVG/PNG) */}
+        <Image
+          src="/gradient.svg"
+          alt=""
+          fill
+          priority
+          className="object-cover object-center pointer-events-none select-none"
+        />
 
-        <div className="mx-auto max-w-6xl px-4 py-12 sm:py-16 lg:py-20 text-center">
-          <h1 className="text-[clamp(28px,6vw,44px)] font-extrabold tracking-tight">
-            {terms.title}
-          </h1>
-          {terms.subtitle && (
-            <p className="mt-3 text-[clamp(14px,2.6vw,18px)] text-white/90 max-w-4xl mx-auto">
-              {terms.subtitle}
-            </p>
-          )}
+        {/* Optional soft tint to ensure text readability */}
+        <div className="absolute inset-0 bg-black/20" />
+
+        {/* Centered heading content */}
+        <div className="relative z-10 mx-auto flex h-full max-w-6xl items-center justify-center px-4 text-center">
+          <div>
+            <h1 className="text-[clamp(28px,6vw,44px)] font-extrabold tracking-tight">
+              {terms.title}
+            </h1>
+            {terms.subtitle && (
+              <p className="mt-3 text-[clamp(14px,2.6vw,18px)] text-white/90 max-w-4xl mx-auto">
+                {terms.subtitle}
+              </p>
+            )}
+          </div>
         </div>
       </section>
 
       {/* BODY */}
-      <section className="pb-16 sm:pb-20 lg:pb-24">
+      <section className="pb-16 pt-5 sm:pb-20 lg:pb-24">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 space-y-10">
           {terms.sections?.map((sec) => {
             const heading = sec.title ?? "";
             const id = slugify(heading);
-
             const isBulleted =
               sec.bulleted === true || BULLET_SECTIONS.has(heading);
 
@@ -58,7 +70,6 @@ export default function TermsAndConditionsPage() {
                   {heading}
                 </h2>
 
-                {/* If the section is marked for bullets, render as list; else paragraphs */}
                 {isBulleted ? (
                   <ul className="mt-3 list-disc pl-5 text-[clamp(13px,2.2vw,16px)] leading-7 text-white/90">
                     {sec.description?.map((line, i) => (
