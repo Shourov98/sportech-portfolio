@@ -1,15 +1,37 @@
 "use client";
 import { useState } from "react";
+import { motion } from "framer-motion";
+
+const SPRING = {
+  type: "spring",
+  stiffness: 140,
+  damping: 18,
+  mass: 0.9,
+};
+
+const topIn = {
+  hidden: { opacity: 0, y: -28 },
+  show: { opacity: 1, y: 0, transition: SPRING },
+};
+
+const leftIn = {
+  hidden: { opacity: 0, x: -260 },
+  show: { opacity: 1, x: 0, transition: SPRING },
+};
+
+const rightIn = {
+  hidden: { opacity: 0, x: 260 },
+  show: { opacity: 1, x: 0, transition: SPRING },
+};
 
 export default function FAQSection() {
-  // 0 = first item open by default
   const [openIdx, setOpenIdx] = useState(0);
 
   const faqs = [
     {
       q: "What services does Sportech provide?",
       a: "We offer innovative sports technology solutions, including fan engagement tools, club management systems, data analytics, and custom interactive experiences.",
-      rich: true, // keep the long answer as provided
+      rich: true,
     },
     {
       q: "Do you only work with sports clubs?",
@@ -34,26 +56,43 @@ export default function FAQSection() {
       <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
         {/* Title + tilted capsule */}
         <div className="relative mx-auto mb-8 text-center sm:mb-10">
-          <h2 className="font-extrabold tracking-tight text-[#EDF900] text-[clamp(28px,6vw,48px)]">
+          <motion.h2
+            variants={topIn}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.6 }}
+            className="font-extrabold tracking-tight text-[#EDF900] text-[clamp(28px,6vw,48px)]"
+          >
             Frequently Asked Questions ?
-          </h2>
+          </motion.h2>
 
           {/* Tilted capsule */}
-          <span
+          <motion.span
+            variants={topIn}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ ...SPRING, delay: 0.08 }}
             className="absolute right-1/2 translate-x-[210px] -top-4 select-none rounded-full bg-[#EDF900] px-3 py-1 text-[12px] font-semibold text-[#1b1d1e] shadow-[0_8px_30px_rgba(0,0,0,0.25)] rotate-[15deg] sm:right-[8%] sm:translate-x-0"
             aria-hidden="true"
           >
             FAQ
-          </span>
+          </motion.span>
         </div>
 
         {/* Accordion */}
         <div className="space-y-3 sm:space-y-4">
           {faqs.map((item, i) => {
             const isOpen = openIdx === i;
+            const rowVariants = i % 2 === 0 ? leftIn : rightIn;
+
             return (
-              <div
+              <motion.div
                 key={item.q}
+                variants={rowVariants}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.25 }}
                 className={[
                   "rounded-2xl border transition-all",
                   isOpen
@@ -81,7 +120,6 @@ export default function FAQSection() {
                     ].join(" ")}
                     aria-hidden="true"
                   >
-                    {/* icon */}
                     <svg
                       width="20"
                       height="20"
@@ -95,10 +133,8 @@ export default function FAQSection() {
                       style={{ transform: isOpen ? "rotate(180deg)" : "none" }}
                     >
                       {isOpen ? (
-                        // minus
                         <line x1="5" y1="12" x2="19" y2="12" />
                       ) : (
-                        // plus
                         <>
                           <line x1="12" y1="5" x2="12" y2="19" />
                           <line x1="5" y1="12" x2="19" y2="12" />
@@ -130,7 +166,7 @@ export default function FAQSection() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

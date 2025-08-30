@@ -1,32 +1,52 @@
 "use client";
 
 import Image from "next/image";
+import { motion } from "framer-motion";
+
+/* smooth spring */
+const SPRING = { type: "spring", stiffness: 120, damping: 24, mass: 1 };
+const topIn = {
+  hidden: { opacity: 0, y: -32 },
+  show: { opacity: 1, y: 0, transition: SPRING },
+};
+const leftIn = {
+  hidden: { opacity: 0, x: -148 },
+  show: { opacity: 1, x: 0, transition: SPRING },
+};
+const rightIn = {
+  hidden: { opacity: 0, x: 148 },
+  show: { opacity: 1, x: 0, transition: SPRING },
+};
 
 /**
- * FeedbackSection
- * - 4 feedback cards (avatar, name, stars, message)
- * - Alternating backgrounds: white / #EDF900
- * - Centered heading
- * - Background ring svg (hidden on small screens)
- * - Responsive grid: 1 col (sm), 2 cols (md+)
+ * FeedbackSection (animated)
+ * - Title: enters from top
+ * - Cards: 1 & 3 from left, 2 & 4 from right
+ * - Colors (md+ 2x2): [0]=white, [1]=yellow, [2]=yellow, [3]=white
  */
 export default function FeedbackSection({
   title = "What Our Clients Say",
-  ringSrc = "/feedback/bgRing.svg",
+  ringSrc = "/feedback/ring.svg",
   items = defaultFeedbacks,
 }) {
   return (
     <section className="relative bg-[#262626] py-14 sm:py-18 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Title */}
-        <h2 className="text-center text-[clamp(28px,6vw,56px)] font-extrabold leading-tight text-[#EDF900]">
+        <motion.h2
+          variants={topIn}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.7 }}
+          className="text-center text-[clamp(28px,6vw,56px)] font-extrabold leading-tight text-[#EDF900]"
+        >
           {title}
-        </h2>
+        </motion.h2>
 
         {/* Background ring (hidden on small) */}
         <div className="pointer-events-none absolute inset-0 hidden md:block">
           <Image
-            src={"/feedback/ring.svg"}
+            src={ringSrc}
             alt=""
             width={496}
             height={496}
@@ -36,18 +56,26 @@ export default function FeedbackSection({
         </div>
 
         {/* Cards */}
-        <div className="relative mt-10 grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+        <div className="relative mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
           {items.map((f, i) => {
-            const yellow = i % 2 === 1; // 0:white, 1:yellow, 2:yellow, 3:white per screenshot
-            const yellowRow = i === 1 || i === 2;
-            const cardBase =
-              "rounded-2xl p-5 sm:p-6 lg:p-7 shadow-[0_8px_30px_rgba(0,0,0,0.25)]";
-            const colors = yellow
-              ? "bg-[#EDF900] text-black"
-              : "bg-white text-black";
+            // Color logic for 2x2 layout: [0]=white, [1]=yellow, [2]=yellow, [3]=white
+            const isYellow = i === 1 || i === 2;
+            // Motion direction: 0 & 2 from left, 1 & 3 from right
+            const dirVariant = i % 2 === 0 ? leftIn : rightIn;
 
             return (
-              <article key={i} className={`${cardBase} ${colors}`}>
+              <motion.article
+                key={i}
+                variants={dirVariant}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.35 }}
+                transition={{ ...SPRING, delay: 0.08 * i }}
+                className={[
+                  "rounded-2xl p-5 sm:p-6 lg:p-7 shadow-[0_8px_30px_rgba(0,0,0,0.25)]",
+                  isYellow ? "bg-[#EDF900] text-black" : "bg-white text-black",
+                ].join(" ")}
+              >
                 {/* Header */}
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
@@ -62,19 +90,14 @@ export default function FeedbackSection({
                       {f.name}
                     </h3>
                   </div>
-
                   <Stars count={f.stars} />
                 </div>
 
                 {/* Message */}
-                <p
-                  className={`mt-4 text-[clamp(13px,2.2vw,15px)] leading-6 ${
-                    yellow ? "text-black/80" : "text-black/80"
-                  }`}
-                >
+                <p className="mt-4 text-[clamp(13px,2.2vw,15px)] leading-6 text-black/80">
                   {f.message}
                 </p>
-              </article>
+              </motion.article>
             );
           })}
         </div>
@@ -83,7 +106,7 @@ export default function FeedbackSection({
   );
 }
 
-/* ---------- Small star component ---------- */
+/* Small star component */
 function Stars({ count = 5 }) {
   return (
     <div className="flex items-center gap-1">
@@ -102,12 +125,12 @@ function Stars({ count = 5 }) {
   );
 }
 
-/* ---------- Demo data (exact content from your mock) ---------- */
+/* Demo data */
 const defaultFeedbacks = [
   {
     name: "Sarah Malik",
     stars: 5,
-    avatar: "/feedback/profile-1.jpg", // replace with your real path
+    avatar: "/feedback/profile-1.jpg",
     message:
       "Sportech’s innovative solutions completely transformed our fan engagement. Their team is professional, responsive, and always delivers beyond expectations",
   },
