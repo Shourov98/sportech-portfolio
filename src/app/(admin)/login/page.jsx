@@ -1,22 +1,45 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import AuthLayout from "@/components/auth/AuthLayout";
-import Brand from "@/components/auth/Brand";
 import TextField from "@/components/auth/TextField";
 import PasswordField from "@/components/auth/PasswordField";
+import Image from "next/image";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+  const router = useRouter();
 
   async function onSubmit(e) {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.currentTarget));
+
     try {
       setLoading(true);
-      // TODO: call your login API
-      // await fetch("/api/auth/login", { method:"POST", body: JSON.stringify(data) })
-      // On success: redirect to /admin
+      setError("");
+
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        throw new Error("Invalid credentials");
+      }
+
+      const result = await res.json();
+
+      // save token for auth checks
+      localStorage.setItem("token", result.token);
+
+      // redirect to dashboard
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -29,7 +52,17 @@ export default function LoginPage() {
         className="w-full max-w-md text-center"
         noValidate
       >
-        <Brand />
+        <div className="flex justify-center mb-4">
+          <Image
+            src="/Logo.svg"
+            alt="SporTech Logo"
+            width={160}
+            height={40}
+            priority
+            className="h-auto w-[160px] lg:w-[240px] p-4"
+          />
+        </div>
+
         <h1 className="text-2xl font-bold">Welcome Back!</h1>
         <p className="mt-1 text-sm text-white/70">
           To login, enter your email address
@@ -59,6 +92,10 @@ export default function LoginPage() {
             </div>
           </div>
         </div>
+
+        {error && (
+          <p className="mt-4 text-sm text-red-500 font-medium">{error}</p>
+        )}
 
         <button
           type="submit"

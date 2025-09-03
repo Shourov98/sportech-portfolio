@@ -1,26 +1,46 @@
 "use client";
+
 import { useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import AuthLayout from "@/components/auth/AuthLayout";
 import Brand from "@/components/auth/Brand";
 import PasswordField from "@/components/auth/PasswordField";
 
-export default function ResetPasswordPage() {
+export default function SetPasswordPage() {
+  const router = useRouter();
   const params = useSearchParams();
+  // You can pass email or a one-time token from the OTP step
   const email = useMemo(() => params.get("email") || "", [params]);
+  const token = useMemo(() => params.get("token") || "", [params]);
+
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(e) {
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.currentTarget));
-    if (data.newPassword !== data.confirmPassword) {
-      alert("Passwords do not match");
+    const form = new FormData(e.currentTarget);
+    const password = String(form.get("password") || "");
+    const confirm = String(form.get("confirm") || "");
+
+    if (!password || password.length < 8) {
+      alert("Please use at least 8 characters.");
       return;
     }
+    if (password !== confirm) {
+      alert("Passwords do not match.");
+      return;
+    }
+
     try {
       setLoading(true);
-      // await fetch("/api/auth/reset-password", { method:"POST", body: JSON.stringify({ email, ...data }) })
-      window.location.href = "/password-changed";
+      // 🔗 Call your API to finalize password set
+      // await fetch("/api/auth/set-password", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ email, token, password }),
+      // });
+
+      // On success:
+      router.push("/password-changed");
     } finally {
       setLoading(false);
     }
@@ -28,33 +48,29 @@ export default function ResetPasswordPage() {
 
   return (
     <AuthLayout>
-      <form onSubmit={onSubmit} className="w-full max-w-md text-center">
+      <form
+        onSubmit={onSubmit}
+        className="w-full max-w-md text-center"
+        noValidate
+      >
         <Brand />
-        <div className="mx-auto mt-2 w-full max-w-md rounded-2xl bg-white p-6 text-left text-[#1b1d1e] shadow">
-          <h1 className="text-xl font-bold text-center text-[#1b1d1e]">
-            Set new password
-          </h1>
+
+        <div className="mx-auto w-full rounded-2xl bg-white p-6 text-left text-[#1b1d1e] shadow">
+          <h1 className="text-xl font-bold text-center">Set new password</h1>
           <p className="mt-1 text-center text-sm text-black/60">
             Set a new password and continue your journey
           </p>
 
           <div className="mt-6 space-y-4">
             <PasswordField
-              name="currentPassword"
-              label="Current Password"
+              name="password"
+              label="Set Password"
               placeholder="Type a strong password"
               iconLeft={<span>🔒</span>}
               required
             />
             <PasswordField
-              name="newPassword"
-              label="New Password"
-              placeholder="Type a strong password"
-              iconLeft={<span>🔒</span>}
-              required
-            />
-            <PasswordField
-              name="confirmPassword"
+              name="confirm"
               label="Confirm password"
               placeholder="Re-type password"
               iconLeft={<span>🔒</span>}

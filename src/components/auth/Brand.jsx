@@ -1,7 +1,16 @@
+import Image from "next/image";
+
 export default function Brand() {
   return (
-    <div className="mb-4 text-center">
-      <Image src="/Logo.png" alt="Logo" width={100} height={100} />
+    <div className="absolute top-12 left-1/2 -translate-x-1/2">
+      <Image
+        src="/Logo.svg" // make sure your svg is inside public/logo.svg
+        alt="SporTech Logo"
+        width={160}
+        height={40}
+        priority
+        className="h-auto w-[160px] sm:w-[200px]"
+      />
     </div>
   );
 }
