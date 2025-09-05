@@ -55,7 +55,6 @@ export default function DashboardPage() {
 
         {tab === "policies" && (
           <div className="space-y-6">
-            <PolicyManager policyTitle="Terms & Conditions" />
             <PolicyManager policyTitle="Privacy Policy" />
           </div>
         )}

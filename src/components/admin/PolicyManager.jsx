@@ -1,201 +1,286 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { authFetch } from "@/utils/api";
+import clsx from "clsx";
 
-/** Small modal */
-function Modal({ open, onClose, title, children, footer }) {
-  if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-2xl rounded-2xl bg-white p-5 text-[#1b1d1e] shadow-lg">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-lg font-semibold">{title}</h3>
-          <button onClick={onClose} className="text-black/60 hover:text-black">
-            ✕
-          </button>
-        </div>
-        <div>{children}</div>
-        {footer && <div className="mt-4 flex justify-end gap-2">{footer}</div>}
-      </div>
-    </div>
-  );
+// ----- config -----
+const API_BASE =
+  (typeof window !== "undefined" &&
+    (process.env.NEXT_PUBLIC_API_BASE_URL || "").replace(/\/+$/, "")) ||
+  "http://localhost:4000";
+const API_PREFIX = "/api";
+const ENDPOINT = (slug) =>
+  `${API_BASE}${API_PREFIX}/policies/${encodeURIComponent(slug)}`;
+
+// optional: read token from localStorage for admin-protected PUT
+function authHeaders() {
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  return {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
 }
 
-/**
- * PolicyManager
- * Props:
- *  - policyTitle: the exact policy title to manage (e.g., "Terms & Conditions", "Privacy Policy")
- */
-export default function PolicyManager({ policyTitle }) {
-  const [list, setList] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [msg, setMsg] = useState("");
-
-  // editor state
-  const [open, setOpen] = useState(false);
-  const [content, setContent] = useState("");
-  const [saving, setSaving] = useState(false);
-  const [formError, setFormError] = useState("");
-
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        const data = await authFetch("/policies", { method: "GET" });
-        if (mounted) setList(Array.isArray(data) ? data : []);
-      } catch (e) {
-        setMsg(e.message || "Failed to load policies.");
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    })();
-    return () => (mounted = false);
-  }, []);
-
-  const item = useMemo(
-    () =>
-      list.find(
-        (p) => (p.title || "").toLowerCase() === policyTitle.toLowerCase()
-      ),
-    [list, policyTitle]
-  );
-
-  function openEdit() {
-    setContent(item?.content || "");
-    setFormError("");
-    setOpen(true);
+// normalize API section into editor-friendly shape
+function normalizeSection(sec) {
+  const title = sec?.title ?? sec?.heading ?? "";
+  // description can be string or string[]
+  let text = "";
+  if (typeof sec?.description === "string") {
+    text = sec.description;
+  } else if (Array.isArray(sec?.description)) {
+    text = sec.description.join("\n\n");
+  } else if (Array.isArray(sec?.paragraphs)) {
+    text = sec.paragraphs.join("\n\n");
   }
+  return { title, text };
+}
 
-  async function save(e) {
-    e.preventDefault();
-    setFormError("");
-    try {
-      setSaving(true);
-      if (item) {
-        // Update existing
-        const id = item.id || item._id;
-        const updated = await authFetch(`/policies/${id}`, {
-          method: "PUT",
-          body: JSON.stringify({ title: policyTitle, content }),
-        });
-        setList((arr) =>
-          arr.map((p) => ((p.id || p._id) === id ? updated : p))
-        );
-      } else {
-        // Create if missing
-        const created = await authFetch("/policies", {
-          method: "POST",
-          body: JSON.stringify({ title: policyTitle, content }),
-        });
-        setList((arr) => [...arr, created]);
+function PolicyEditor({ slug }) {
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [ok, setOk] = useState("");
+
+  const [title, setTitle] = useState("");
+  const [subtitle, setSubtitle] = useState("");
+  const [sections, setSections] = useState([]); // [{title, text}]
+
+  // GET
+  useEffect(() => {
+    let isMounted = true;
+    async function load() {
+      setLoading(true);
+      setError("");
+      setOk("");
+      try {
+        const res = await fetch(ENDPOINT(slug), { cache: "no-store" });
+        if (!res.ok) {
+          const t = await res.text();
+          throw new Error(`HTTP ${res.status} — ${t || "Failed to load"}`);
+        }
+        const data = await res.json();
+        if (!isMounted) return;
+        setTitle(data?.title || "");
+        setSubtitle(data?.subtitle || "");
+        const arr = Array.isArray(data?.sections) ? data.sections : [];
+        setSections(arr.map(normalizeSection));
+      } catch (e) {
+        if (!isMounted) return;
+        setError(e?.message || "Failed to load policy.");
+      } finally {
+        if (isMounted) setLoading(false);
       }
-      setOpen(false);
-    } catch (err) {
-      setFormError(err?.message || "Save failed.");
+    }
+    load();
+    return () => {
+      isMounted = false;
+    };
+  }, [slug]);
+
+  // PUT (save entire doc)
+  async function onSave() {
+    setSaving(true);
+    setError("");
+    setOk("");
+    try {
+      // always send description as a single string (paragraphs separated by blank line)
+      const body = {
+        title,
+        subtitle,
+        sections: sections.map((s) => ({
+          title: s.title,
+          description: (s.text || "").trim(), // string
+        })),
+      };
+
+      const res = await fetch(ENDPOINT(slug), {
+        method: "PUT",
+        headers: authHeaders(),
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        const t = await res.text();
+        throw new Error(`HTTP ${res.status} — ${t || "Save failed"}`);
+      }
+      setOk("Saved successfully.");
+    } catch (e) {
+      setError(e?.message || "Save failed.");
     } finally {
       setSaving(false);
     }
   }
 
+  function addSection() {
+    setSections((prev) => [...prev, { title: "", text: "" }]);
+  }
+
+  function removeSection(idx) {
+    setSections((prev) => prev.filter((_, i) => i !== idx));
+  }
+
+  function updateSection(idx, patch) {
+    setSections((prev) =>
+      prev.map((s, i) => (i === idx ? { ...s, ...patch } : s))
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="rounded-xl border border-white/10 bg-[#111] p-6 text-white">
+        Loading…
+      </div>
+    );
+  }
+
   return (
-    <section className="rounded-2xl bg-white/5 border border-white/10 p-4">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex-1">
-          <p className="text-sm uppercase tracking-wide text-white/60">Title</p>
-          <h3 className="text-xl font-semibold text-white">{policyTitle}</h3>
+    <div className="rounded-xl border border-white/10 bg-[#111] p-5 md:p-6 text-white">
+      <div className="flex items-center gap-3 mb-4">
+        <span className="rounded-full bg-[#EDF900] px-3 py-1 text-xs font-bold text-black uppercase">
+          {slug === "privacy-policy" ? "Privacy Policy" : "Terms & Conditions"}
+        </span>
+        <span className="text-xs opacity-70">
+          GET/PUT: <code>{`${API_BASE}${API_PREFIX}/policies/${slug}`}</code>
+        </span>
+      </div>
 
-          <p className="mt-3 text-sm uppercase tracking-wide text-white/60">
-            Content
-          </p>
-          {loading ? (
-            <p className="text-white/80">Loading…</p>
-          ) : (
-            <p className="text-white/90 whitespace-pre-line">
-              {item?.content || "— (not created yet) —"}
-            </p>
-          )}
+      {/* Title / Subtitle */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <label className="mb-1 block text-sm opacity-80">Title</label>
+          <input
+            className="w-full rounded-lg border border-white/10 bg-[#1a1a1a] px-3 py-2 outline-none focus:ring-2 focus:ring-[#EDF900]"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Privacy Policy"
+          />
         </div>
-
-        <div className="shrink-0">
-          {!loading &&
-            (item ? (
-              <button
-                onClick={openEdit}
-                className="h-9 rounded-lg bg-white/10 px-3 text-sm text-white hover:bg-white/20"
-              >
-                Edit
-              </button>
-            ) : (
-              <button
-                onClick={openEdit}
-                className="h-9 rounded-lg bg-[#EDF900] px-3 text-sm text-black font-semibold hover:brightness-95"
-              >
-                Create
-              </button>
-            ))}
+        <div>
+          <label className="mb-1 block text-sm opacity-80">Subtitle</label>
+          <input
+            className="w-full rounded-lg border border-white/10 bg-[#1a1a1a] px-3 py-2 outline-none focus:ring-2 focus:ring-[#EDF900]"
+            value={subtitle}
+            onChange={(e) => setSubtitle(e.target.value)}
+            placeholder="Short summary shown under the title"
+          />
         </div>
       </div>
 
-      {msg && <p className="mt-3 text-sm text-white/80">{msg}</p>}
-
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        title={item ? "Edit policy content" : "Create policy"}
-        footer={
-          <>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="rounded-lg px-4 py-2 bg-black/5 hover:bg-black/10"
-              disabled={saving}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              form={`policy-form-${policyTitle}`}
-              disabled={saving}
-              className="rounded-lg px-4 py-2 bg-[#EDF900] text-black font-semibold hover:brightness-95 disabled:opacity-60"
-            >
-              {saving ? "Saving…" : "Save"}
-            </button>
-          </>
-        }
-      >
-        <form
-          id={`policy-form-${policyTitle}`}
-          onSubmit={save}
-          className="space-y-4"
+      {/* Sections */}
+      <div className="mt-6 flex items-center justify-between">
+        <h3 className="text-lg font-bold">Sections</h3>
+        <button
+          onClick={addSection}
+          className="rounded-lg bg-[#EDF900] px-3 py-1.5 text-sm font-semibold text-black hover:brightness-95"
         >
-          <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <label className="block text-sm font-medium mb-1">Title</label>
-              {/* Read-only per your requirement */}
-              <input
-                value={policyTitle}
-                readOnly
-                className="w-full rounded border border-black/10 px-3 py-2 bg-black/5"
+          + Add section
+        </button>
+      </div>
+
+      {sections.length === 0 && (
+        <p className="mt-3 text-sm text-white/60">No sections yet.</p>
+      )}
+
+      <div className="mt-4 grid grid-cols-1 gap-4">
+        {sections.map((sec, idx) => (
+          <div
+            key={idx}
+            className="rounded-lg border border-white/10 bg-[#151515] p-4"
+          >
+            <div className="flex items-start gap-3">
+              <div className="flex-1">
+                <label className="mb-1 block text-sm opacity-80">
+                  Section title
+                </label>
+                <input
+                  className="w-full rounded-lg border border-white/10 bg-[#1a1a1a] px-3 py-2 outline-none focus:ring-2 focus:ring-[#EDF900]"
+                  value={sec.title}
+                  onChange={(e) =>
+                    updateSection(idx, { title: e.target.value })
+                  }
+                  placeholder="e.g., 1. Introduction"
+                />
+              </div>
+              <button
+                onClick={() => removeSection(idx)}
+                className="rounded-md border border-white/10 bg-[#1a1a1a] px-3 py-2 text-sm text-white/80 hover:bg-[#222]"
+                title="Remove section"
+              >
+                Delete
+              </button>
+            </div>
+
+            <div className="mt-3">
+              <label className="mb-1 block text-sm opacity-80">
+                Content (use blank line to separate paragraphs)
+              </label>
+              <textarea
+                className="h-36 w-full resize-y rounded-lg border border-white/10 bg-[#1a1a1a] px-3 py-2 outline-none focus:ring-2 focus:ring-[#EDF900]"
+                value={sec.text}
+                onChange={(e) => updateSection(idx, { text: e.target.value })}
+                placeholder={`Paragraph 1...\n\nParagraph 2...`}
               />
             </div>
           </div>
+        ))}
+      </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Content</label>
-            <textarea
-              rows={10}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              required
-              className="w-full rounded border border-black/10 px-3 py-2"
-              placeholder="Type the full policy content…"
-            />
-          </div>
+      {/* Save / status */}
+      <div className="mt-6 flex items-center justify-between">
+        <div className="text-xs text-white/60">
+          Changes are saved via <strong>PUT</strong>{" "}
+          <code className="opacity-90">{`${API_PREFIX}/policies/${slug}`}</code>
+          .
+        </div>
+        <button
+          onClick={onSave}
+          disabled={saving}
+          className={clsx(
+            "rounded-xl bg-[#EDF900] px-4 py-2 font-semibold text-black shadow hover:brightness-95",
+            saving && "opacity-60"
+          )}
+        >
+          {saving ? "Saving..." : "Save changes"}
+        </button>
+      </div>
 
-          {formError && <p className="text-sm text-red-600">{formError}</p>}
-        </form>
-      </Modal>
+      {error && (
+        <p className="mt-3 text-sm font-medium text-red-400">Error: {error}</p>
+      )}
+      {ok && <p className="mt-3 text-sm font-medium text-emerald-400">{ok}</p>}
+    </div>
+  );
+}
+
+export default function PolicyManager() {
+  const [tab, setTab] = useState("privacy-policy"); // or "terms-and-conditions"
+
+  return (
+    <section>
+      {/* Tabs */}
+      <div className="mb-4 flex gap-3">
+        {[
+          { label: "Privacy Policy", slug: "privacy-policy" },
+          { label: "Terms & Conditions", slug: "terms-and-conditions" },
+        ].map((t) => (
+          <button
+            key={t.slug}
+            onClick={() => setTab(t.slug)}
+            className={clsx(
+              "rounded-full border px-3 py-1.5 text-sm",
+              tab === t.slug
+                ? "border-[#EDF900] bg-[#EDF900] font-semibold text-black"
+                : "border-white/10 bg-[#1a1a1a] text-white hover:bg-[#222]"
+            )}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Editor */}
+      <PolicyEditor slug={tab} />
     </section>
   );
 }

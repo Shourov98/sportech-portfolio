@@ -1,11 +1,77 @@
+// components/Footer.jsx
 import Link from "next/link";
 
-export default function Footer({
-  contact = defaultContact,
-  nav = defaultNav,
-  socials = defaultSocials,
-  legal = defaultLegal,
-}) {
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+/**
+ * Server component: fetches public /contact and renders the footer.
+ * Uses no-store so dashboard edits show up immediately.
+ */
+export default async function Footer() {
+  // ----- defaults -----
+  let contact = {
+    address: "Riyadh, Saudi Arabia",
+    email: "contact@sportech.com.sa",
+    phone: "+966114222225",
+  };
+
+  let socials = [
+    { label: "Facebook", href: "#", icon: <FacebookIcon /> },
+    { label: "YouTube", href: "#", icon: <YouTubeIcon /> },
+    { label: "TikTok", href: "#", icon: <TikTokIcon /> },
+    { label: "Instagram", href: "#", icon: <InstagramIcon /> },
+  ];
+
+  const nav = [
+    { label: "Home", href: "/" },
+    { label: "About Us", href: "/about-us" },
+    { label: "Services & Solution", href: "/service" },
+    { label: "Contact Us", href: "/contact-us" },
+  ];
+
+  const legal = [
+    { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Terms & conditions", href: "/terms-conditions" },
+    { label: "FAQ", href: "/faq" },
+  ];
+
+  // ----- fetch live contact -----
+  try {
+    const res = await fetch(`${API_BASE}/contact`, { cache: "no-store" });
+    if (res.ok) {
+      const data = await res.json();
+      contact = {
+        address: data?.location || contact.address,
+        email: data?.email || contact.email,
+        phone: data?.phone || contact.phone,
+      };
+      socials = [
+        data?.facebook && {
+          label: "Facebook",
+          href: data.facebook,
+          icon: <FacebookIcon />,
+        },
+        data?.youtube && {
+          label: "YouTube",
+          href: data.youtube,
+          icon: <YouTubeIcon />,
+        },
+        data?.tiktok && {
+          label: "TikTok",
+          href: data.tiktok,
+          icon: <TikTokIcon />,
+        },
+        data?.instagram && {
+          label: "Instagram",
+          href: data.instagram,
+          icon: <InstagramIcon />,
+        },
+      ].filter(Boolean);
+    }
+  } catch {
+    // fall back to defaults silently
+  }
+
   const year = new Date().getFullYear();
 
   return (
@@ -99,6 +165,7 @@ export default function Footer({
   );
 }
 
+/* --- tiny presentational bits --- */
 function ContactItem({ icon, children }) {
   return (
     <li className="flex items-center gap-3">
@@ -108,7 +175,7 @@ function ContactItem({ icon, children }) {
   );
 }
 
-/* Inline icons (you can replace with your SVGs from /public/icons/...) */
+/* Inline icons (same shapes as your original) */
 function LocationIcon() {
   return (
     <svg
@@ -150,62 +217,31 @@ function PhoneIcon() {
     </svg>
   );
 }
-
-// Defaults (edit freely)
-const defaultContact = {
-  address: "Riyadh, Saudi Arabia",
-  email: "contact@sportech.com.sa",
-  phone: "+966114222225",
-};
-
-const defaultNav = [
-  { label: "Home", href: "/#" },
-  { label: "About Us", href: "/#about" },
-  { label: "Services & Solution", href: "/#services" },
-  { label: "Contact Us", href: "/#contact" },
-];
-
-const defaultSocials = [
-  {
-    label: "Facebook",
-    href: "#",
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
-        <path d="M22 12a10 10 0 1 0-11.6 9.9v-7h-2.2V12h2.2V9.8c0-2.2 1.3-3.4 3.3-3.4.95 0 1.95.17 1.95.17v2.15h-1.1c-1.08 0-1.41.67-1.41 1.36V12h2.4l-.38 2.9h-2.02v7A10 10 0 0 0 22 12Z" />
-      </svg>
-    ),
-  },
-  {
-    label: "YouTube",
-    href: "#",
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
-        <path d="M21.6 7.2a3 3 0 0 0-2.1-2.1C17.8 4.6 12 4.6 12 4.6s-5.8 0-7.5.5a3 3 0 0 0-2.1 2.1A31.3 31.3 0 0 0 2 12a31.3 31.3 0 0 0 .4 4.8 3 3 0 0 0 2.1 2.1c1.7.5 7.5.5 7.5.5s5.8 0 7.5-.5a3 3 0 0 0 2.1-2.1c.3-1.6.4-3.2.4-4.8s-.1-3.2-.4-4.8ZM10 14.7V9.3L15.2 12 10 14.7Z" />
-      </svg>
-    ),
-  },
-  {
-    label: "TikTok",
-    href: "#",
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
-        <path d="M16 8.04c1.28.93 2.84 1.48 4.54 1.48V7.03a6.73 6.73 0 0 1-4.56-1.77V3h-3.6v12.1a2.5 2.5 0 1 1-2.1-2.45v-3.6A6.1 6.1 0 1 0 14.38 19V8.04H16Z" />
-      </svg>
-    ),
-  },
-  {
-    label: "Instagram",
-    href: "#",
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
-        <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm8 3H9a3 3 0 0 0-3 3v6a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3Zm-3 3.8A3.2 3.2 0 1 1 8.8 12 3.2 3.2 0 0 1 12 8.8Zm5.1-.9a.9.9 0 1 1-.9.9.9.9 0 0 1 .9-.9Z" />
-      </svg>
-    ),
-  },
-];
-
-const defaultLegal = [
-  { label: "Privacy Policy", href: "/privacy" },
-  { label: "Terms & conditions", href: "/terms" },
-  { label: "FAQ", href: "/faq" },
-];
+function FacebookIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
+      <path d="M22 12a10 10 0 1 0-11.6 9.9v-7h-2.2V12h2.2V9.8c0-2.2 1.3-3.4 3.3-3.4.95 0 1.95.17 1.95.17v2.15h-1.1c-1.08 0-1.41.67-1.41 1.36V12h2.4l-.38 2.9h-2.02v7A10 10 0 0 0 22 12Z" />
+    </svg>
+  );
+}
+function YouTubeIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
+      <path d="M21.6 7.2a3 3 0 0 0-2.1-2.1C17.8 4.6 12 4.6 12 4.6s-5.8 0-7.5.5a3 3 0 0 0-2.1 2.1A31.3 31.3 0 0 0 2 12a31.3 31.3 0 0 0 .4 4.8 3 3 0 0 0 2.1 2.1c1.7.5 7.5.5 7.5.5s5.8 0 7.5-.5a3 3 0 0 0 2.1-2.1c.3-1.6.4-3.2.4-4.8s-.1-3.2-.4-4.8ZM10 14.7V9.3L15.2 12 10 14.7Z" />
+    </svg>
+  );
+}
+function TikTokIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
+      <path d="M16 8.04c1.28.93 2.84 1.48 4.54 1.48V7.03a6.73 6.73 0 0 1-4.56-1.77V3h-3.6v12.1a2.5 2.5 0 1 1-2.1-2.45v-3.6A6.1 6.1 0 1 0 14.38 19V8.04H16Z" />
+    </svg>
+  );
+}
+function InstagramIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
+      <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm8 3H9a3 3 0 0 0-3 3v6a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3Zm-3 3.8A3.2 3.2 0 1 1 8.8 12 3.2 3.2 0 0 1 12 8.8Zm5.1-.9a.9.9 0 1 1-.9.9.9.9 0 0 1 .9-.9Z" />
+    </svg>
+  );
+}

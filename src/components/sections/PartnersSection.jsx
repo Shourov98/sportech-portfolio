@@ -1,33 +1,21 @@
 "use client";
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
+import { useMemo } from "react";
 
 /**
- * Partners section:
- * - First 4 logos slide in and STAY visible
- * - Marquee block remains commented
+ * PartnersSectionMarquee
+ * - Background & layout same as your current section
+ * - Inside the yellow band we show an infinite marquee of partner logos
+ * - CTA at the bottom links to /partners
+ *
+ * props:
+ *  - logos: [{ src: "https://.../logo.png", alt: "Brand" }, ...]
+ *  - duration: seconds for one full loop (default 28)
  */
-export default function PartnersSection({ logos = [] }) {
-  const firstFour = logos.slice(0, 5);
-  const containerRef = useRef(null);
-  const inView = useInView(containerRef, { once: true, margin: "-20% 0px" });
-
-  const list = {
-    hidden: { opacity: 1 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.1 },
-    },
-  };
-  const item = {
-    hidden: { x: -80, opacity: 0 },
-    show: {
-      x: 0,
-      opacity: 1,
-      transition: { type: "spring", damping: 22, stiffness: 240 },
-    },
-  };
+export default function PartnersSectionMarquee({ logos = [], duration = 28 }) {
+  // Duplicate the array for a seamless loop
+  const loop = useMemo(() => [...logos, ...logos], [logos]);
 
   return (
     <section className="relative bg-[#262626] py-12 sm:py-16 lg:py-24">
@@ -38,7 +26,7 @@ export default function PartnersSection({ logos = [] }) {
         </h2>
       </div>
 
-      {/* FULL yellow band: everything inside (including CTA) */}
+      {/* FULL yellow band: marquee lives inside here */}
       <div className="mt-6 bg-[#EDF900]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 sm:pt-12 lg:pt-14 pb-12 sm:pb-14 lg:pb-16 overflow-hidden">
           {/* Intro text */}
@@ -51,80 +39,86 @@ export default function PartnersSection({ logos = [] }) {
             </p>
           </div>
 
-          {/* Intro row: 4 WHITE cards slide in and stay visible */}
-          <div ref={containerRef} className="relative mt-8 sm:mt-10">
-            <motion.ul
-              variants={list}
-              initial="hidden"
-              animate={inView ? "show" : "hidden"}
-              className="grid grid-cols-2 gap-4 sm:grid-cols-4"
-            >
-              {logos.map((p) => (
-                <motion.li
-                  key={p.name || p}
-                  variants={item}
-                  className="rounded-2xl bg-white ring-1 ring-black/10 shadow-sm"
-                >
-                  <div className="relative mx-auto h-24 sm:h-28 lg:h-32 w-full rounded-2xl bg-white">
-                    <Image
-                      src={p.src || `/partners/${p}`}
-                      alt={p.name || p}
-                      fill
-                      className="object-contain p-6 mix-blend-normal"
-                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 50vw"
-                    />
-                  </div>
-                </motion.li>
-              ))}
-            </motion.ul>
+          {/* Marquee */}
+          <div
+            className="relative mt-8 sm:mt-10 overflow-hidden"
+            style={{ ["--marquee-duration"]: `${duration}s` }}
+          >
+            {/* gradient masks at edges for a soft fade */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-10 sm:w-16 bg-gradient-to-r from-[#EDF900] to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-10 sm:w-16 bg-gradient-to-l from-[#EDF900] to-transparent" />
 
-            {/* Marquee row: keep commented for now */}
-            {/*
-            <div className="relative opacity-0 transition-opacity duration-500">
-              ...
+            {/* track (200% width because we render two copies) */}
+            <div className="marquee-track flex items-center gap-4 sm:gap-5 w-[200%]">
+              {loop.map((logo, idx) => (
+                <Card key={`${logo?.src || "logo"}-${idx}`} logo={logo} />
+              ))}
             </div>
-            */}
           </div>
 
           {/* CTA stays INSIDE the yellow band */}
           <div className="mt-10 sm:mt-12 flex justify-center">
-            <a
-              href="#"
+            <Link
+              href="/partners"
               className="inline-flex items-center gap-3 rounded-2xl bg-black px-6 py-3 text-base font-semibold text-[#EDF900] shadow-[0_8px_30px_rgba(0,0,0,0.25)] hover:brightness-110"
             >
               View Details
               <span className="ml-1 grid size-7 place-items-center rounded-xl bg-[#EDF900] text-black">
                 »
               </span>
-            </a>
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* marquee styles (kept for later; currently unused) */}
+      {/* marquee animation */}
       <style jsx global>{`
-        @keyframes marquee-right {
+        @keyframes marquee-left {
           0% {
-            transform: translateX(-50%);
+            transform: translateX(0);
           }
           100% {
-            transform: translateX(0);
+            transform: translateX(-50%);
           }
         }
         .marquee-track {
-          animation: marquee-right 24s linear infinite;
+          animation: marquee-left var(--marquee-duration) linear infinite;
         }
-        .marquee-mask {
-          background: linear-gradient(
-            90deg,
-            rgba(237, 249, 0, 0) 0%,
-            rgba(237, 249, 0, 1) 8%,
-            rgba(237, 249, 0, 1) 92%,
-            rgba(237, 249, 0, 0) 100%
-          );
-          pointer-events: none;
+        @media (prefers-reduced-motion: reduce) {
+          .marquee-track {
+            animation: none;
+            transform: translateX(0);
+          }
         }
       `}</style>
     </section>
+  );
+}
+
+function Card({ logo }) {
+  // supports both { src, alt } and string names you used before
+  const src = typeof logo === "string" ? `/partners/${logo}` : logo?.src;
+  const alt =
+    (typeof logo === "object" && logo?.alt) || logo?.name || "Partner";
+
+  return (
+    <div
+      className={[
+        "shrink-0 py-5 px-1 sm:px-2",
+        // show 3 on small, 4 on md+ (same approach as your strip)
+        "min-w-[33.3333vw] md:min-w-[25vw] lg:min-w-[25vw]",
+      ].join(" ")}
+    >
+      <div className="relative mx-auto h-20 sm:h-24 md:h-28 lg:h-32 rounded-2xl bg-white ring-1 ring-black/10 shadow-sm">
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          priority={false}
+          className="object-contain p-3 sm:p-4 md:p-5 lg:p-6"
+          sizes="(min-width:1024px) 25vw, (min-width:768px) 25vw, 33.33vw"
+        />
+      </div>
+    </div>
   );
 }

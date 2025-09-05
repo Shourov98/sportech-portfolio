@@ -65,7 +65,7 @@ export default function ServicesSection({
           <div className="mt-10 sm:mt-12 flex flex-wrap justify-center gap-3">
             {footerCtas.map((cta, i) => {
               const Btn = (
-                <AnimatedSwapButton key={i} href="#contact-us">
+                <AnimatedSwapButton key={i} href="service">
                   {cta.label}
                 </AnimatedSwapButton>
               );
