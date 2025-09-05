@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Sidebar from "@/components/admin/Sidebar";
 import GenericEditor from "@/components/admin/GenericEditor";
 import HomeEditor from "@/components/admin/HomeEditor";
+import TeamManager from "@/components/admin/TeamManager";
 
 const SIDEBAR_W = 260; // keep in sync with Sidebar w-[260px]
 
@@ -32,7 +33,7 @@ export default function DashboardPage() {
         className="min-h-screen p-4 md:p-8"
         style={{ marginLeft: `${SIDEBAR_W}px` }}
       >
-        {tab === "home" && <HomeEditor />}
+        {tab === "home" && <TeamManager />}
 
         {tab === "about" && (
           <GenericEditor title="About Us Content" endpoint="/admin/about" />
