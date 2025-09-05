@@ -8,6 +8,9 @@ import TeamManager from "@/components/admin/TeamManager";
 import FeedbackManager from "@/components/admin/FeedbackManager";
 import FaqManager from "@/components/admin/FaqManager";
 import ServiceManager from "@/components/admin/ServiceManager";
+import PartnerManager from "@/components/admin/PartnerManager";
+import PolicyManager from "@/components/admin/PolicyManager";
+import ContactManager from "@/components/admin/ContactManager";
 
 const SIDEBAR_W = 260; // keep in sync with Sidebar w-[260px]
 
@@ -46,17 +49,15 @@ export default function DashboardPage() {
         )}
         {tab === "services" && <ServiceManager />}
 
-        {tab === "contact" && (
-          <GenericEditor title="Contact Content" endpoint="/admin/contact" />
-        )}
-        {tab === "partners" && (
-          <GenericEditor
-            title="Our Partner Content"
-            endpoint="/admin/partners"
-          />
-        )}
+        {tab === "contact" && <ContactManager />}
+
+        {tab === "partners" && <PartnerManager />}
+
         {tab === "policies" && (
-          <GenericEditor title="Policies Content" endpoint="/admin/policies" />
+          <div className="space-y-6">
+            <PolicyManager policyTitle="Terms & Conditions" />
+            <PolicyManager policyTitle="Privacy Policy" />
+          </div>
         )}
       </main>
     </div>
