@@ -5,6 +5,9 @@ import Sidebar from "@/components/admin/Sidebar";
 import GenericEditor from "@/components/admin/GenericEditor";
 import HomeEditor from "@/components/admin/HomeEditor";
 import TeamManager from "@/components/admin/TeamManager";
+import FeedbackManager from "@/components/admin/FeedbackManager";
+import FaqManager from "@/components/admin/FaqManager";
+import ServiceManager from "@/components/admin/ServiceManager";
 
 const SIDEBAR_W = 260; // keep in sync with Sidebar w-[260px]
 
@@ -36,14 +39,13 @@ export default function DashboardPage() {
         {tab === "home" && <TeamManager />}
 
         {tab === "about" && (
-          <GenericEditor title="About Us Content" endpoint="/admin/about" />
+          <div className="space-y-10">
+            <FeedbackManager />
+            <FaqManager />
+          </div>
         )}
-        {tab === "services" && (
-          <GenericEditor
-            title="Our Services Content"
-            endpoint="/admin/services"
-          />
-        )}
+        {tab === "services" && <ServiceManager />}
+
         {tab === "contact" && (
           <GenericEditor title="Contact Content" endpoint="/admin/contact" />
         )}
