@@ -1,29 +1,53 @@
 // src/components/ServicesSection.jsx
 "use client";
 
+import { useMemo } from "react";
 import { slugify } from "../../data/services";
 import AnimatedSwapButton from "../AnimatedSwapButton";
+import { useAppData } from "@/store/appData"; // ⬅︎ pull from zustand
 
 export default function ServicesSection({
+  // You can still pass a prop, but we'll prefer the store if it has data
   services = defaultServices,
 
   // Header
-  title = "Services & Solutions", // can be string OR JSX
+  title = "Services & Solutions",
   subtitle = "Comprehensive Digital Sports Solutions",
-  description, // optional extra blurb
+  description,
 
-  // Footer CTAs: [{ label, href, onClick }] – order matters
+  // Footer CTAs
   footerCtas = [{ label: "See More", href: "#" }],
 
   // Styling hooks
   bgClass = "bg-[#262626]",
   containerClass = "",
-  gridClass = "md:grid-cols-2 lg:grid-cols-3", // override columns per page
+  gridClass = "md:grid-cols-2 lg:grid-cols-3",
   sectionClass = "",
 
   // Card customization
   cardButtonLabel = "View Details",
 }) {
+  // ---- pull from zustand and map to the shape your cards expect ----
+  const apiServices = useAppData((s) => s.services);
+
+  const mappedFromStore = useMemo(() => {
+    if (!Array.isArray(apiServices) || apiServices.length === 0) return [];
+
+    return apiServices.map((s) => ({
+      // API → UI mapping (with fallbacks)
+      title: s.title || s.name || "Untitled",
+      icon: s.logo || s.bannerImage || s.rightImage || "/services/support.svg",
+      excerpt: s.short_description || s.shortDesc || s.description || "",
+
+      // keep optional sizes if your icons need them
+      width: 154,
+      height: 125,
+    }));
+  }, [apiServices]);
+
+  // prefer store data if present; otherwise use the prop/default
+  const list = mappedFromStore.length ? mappedFromStore : services;
+
   return (
     <section
       id="services"
@@ -55,22 +79,23 @@ export default function ServicesSection({
         <div
           className={`mt-10 grid grid-cols-1 items-stretch gap-6 sm:gap-7 ${gridClass}`}
         >
-          {services.map((s) => (
-            <ServiceCard key={s.title} {...s} buttonLabel={cardButtonLabel} />
+          {list.map((s, i) => (
+            <ServiceCard
+              key={`${s.title}-${i}`} // avoid key warnings
+              {...s}
+              buttonLabel={cardButtonLabel}
+            />
           ))}
         </div>
 
         {/* Footer CTAs */}
         {footerCtas?.length > 0 && (
           <div className="mt-10 sm:mt-12 flex flex-wrap justify-center gap-3">
-            {footerCtas.map((cta, i) => {
-              const Btn = (
-                <AnimatedSwapButton key={i} href="service">
-                  {cta.label}
-                </AnimatedSwapButton>
-              );
-              return Btn;
-            })}
+            {footerCtas.map((cta, i) => (
+              <AnimatedSwapButton key={i} href="service">
+                {cta.label}
+              </AnimatedSwapButton>
+            ))}
           </div>
         )}
       </div>
@@ -132,24 +157,12 @@ export function ServiceCard({
             {buttonLabel}
           </AnimatedSwapButton>
         </div>
-
-        {/* <div className="mt-auto pt-5">
-          <a
-            href={buttonHref}
-            className="inline-flex w-full items-center justify-between rounded-xl bg-[#e4ff25] px-5 py-2 font-semibold text-black transition hover:brightness-95"
-          >
-            <span>{buttonLabel}</span>
-            <span className="ml-2 inline-grid size-6 place-items-center rounded-md bg-black/85 text-white">
-              »
-            </span>
-          </a>
-        </div> */}
       </div>
     </article>
   );
 }
 
-/* ------- Demo data (replace/extend as needed) ------- */
+/* Fallback demo data (kept) */
 const defaultServices = [
   {
     title: "Subscription Management Platform",

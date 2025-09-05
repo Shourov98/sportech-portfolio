@@ -1,24 +1,18 @@
+// src/components/FAQSection.jsx
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
+import { useAppData } from "@/store/appData"; // ← pull from zustand
 
-const SPRING = {
-  type: "spring",
-  stiffness: 140,
-  damping: 18,
-  mass: 0.9,
-};
-
+const SPRING = { type: "spring", stiffness: 140, damping: 18, mass: 0.9 };
 const topIn = {
   hidden: { opacity: 0, y: -28 },
   show: { opacity: 1, y: 0, transition: SPRING },
 };
-
 const leftIn = {
   hidden: { opacity: 0, x: -260 },
   show: { opacity: 1, x: 0, transition: SPRING },
 };
-
 const rightIn = {
   hidden: { opacity: 0, x: 260 },
   show: { opacity: 1, x: 0, transition: SPRING },
@@ -27,29 +21,49 @@ const rightIn = {
 export default function FAQSection() {
   const [openIdx, setOpenIdx] = useState(0);
 
-  const faqs = [
-    {
-      q: "What services does Sportech provide?",
-      a: "We offer innovative sports technology solutions, including fan engagement tools, club management systems, data analytics, and custom interactive experiences.",
-      rich: true,
-    },
-    {
-      q: "Do you only work with sports clubs?",
-      a: "Mostly clubs, but we also partner with leagues, venues, and sports businesses.",
-    },
-    {
-      q: "Can you create a custom solution for my needs?",
-      a: "Yes—every solution is tailored to your goals, integrations, and budget.",
-    },
-    {
-      q: "How long does it take to build a website or platform?",
-      a: "MVPs often ship in 6–10 weeks; larger platforms can take 3–6 months, depending on scope.",
-    },
-    {
-      q: "Do you provide ongoing support after launch?",
-      a: "Absolutely—maintenance, updates, and support packages are available.",
-    },
-  ];
+  // 1) Read from store
+  const faqsFromStore = useAppData((s) => s.faqs);
+
+  // 2) Normalize store → component shape
+  const faqs = useMemo(() => {
+    if (Array.isArray(faqsFromStore) && faqsFromStore.length > 0) {
+      return faqsFromStore.map((f) => ({
+        id: f._id ?? f.id ?? f.question ?? cryptoRandomKey(),
+        q: f.question ?? "",
+        a: f.answer ?? "",
+        rich: false, // set true if you later want to render rich HTML for a subset
+      }));
+    }
+    // fallback demo content (your current hardcoded list)
+    return [
+      {
+        id: "d1",
+        q: "What services does Sportech provide?",
+        a: "We offer innovative sports technology solutions, including fan engagement tools, club management systems, data analytics, and custom interactive experiences.",
+        rich: true,
+      },
+      {
+        id: "d2",
+        q: "Do you only work with sports clubs?",
+        a: "Mostly clubs, but we also partner with leagues, venues, and sports businesses.",
+      },
+      {
+        id: "d3",
+        q: "Can you create a custom solution for my needs?",
+        a: "Yes—every solution is tailored to your goals, integrations, and budget.",
+      },
+      {
+        id: "d4",
+        q: "How long does it take to build a website or platform?",
+        a: "MVPs often ship in 6–10 weeks; larger platforms can take 3–6 months, depending on scope.",
+      },
+      {
+        id: "d5",
+        q: "Do you provide ongoing support after launch?",
+        a: "Absolutely—maintenance, updates, and support packages are available.",
+      },
+    ];
+  }, [faqsFromStore]);
 
   return (
     <section id="faq" className="relative bg-[#262626] py-16 sm:py-20 lg:py-28">
@@ -66,7 +80,6 @@ export default function FAQSection() {
             Frequently Asked Questions ?
           </motion.h2>
 
-          {/* Tilted capsule */}
           <motion.span
             variants={topIn}
             initial="hidden"
@@ -88,7 +101,7 @@ export default function FAQSection() {
 
             return (
               <motion.div
-                key={item.q}
+                key={item.id ?? item.q}
                 variants={rowVariants}
                 initial="hidden"
                 whileInView="show"
@@ -110,7 +123,7 @@ export default function FAQSection() {
                     {item.q}
                   </h3>
 
-                  {/* Plus / Minus in circular badge */}
+                  {/* Plus / Minus */}
                   <span
                     className={[
                       "grid size-9 place-items-center rounded-full border transition",
@@ -144,7 +157,7 @@ export default function FAQSection() {
                   </span>
                 </button>
 
-                {/* Body (animated height) */}
+                {/* Body */}
                 <div
                   className={[
                     "grid overflow-hidden transition-[grid-template-rows] duration-300 ease-out",
@@ -186,4 +199,14 @@ export default function FAQSection() {
       </div>
     </section>
   );
+}
+
+// tiny helper to generate a stable-ish id if backend lacks one
+function cryptoRandomKey() {
+  if (typeof crypto !== "undefined" && crypto.getRandomValues) {
+    const arr = new Uint32Array(1);
+    crypto.getRandomValues(arr);
+    return `k_${arr[0].toString(16)}`;
+  }
+  return `k_${Math.random().toString(16).slice(2)}`;
 }

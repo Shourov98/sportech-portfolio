@@ -1,13 +1,11 @@
-// src/app/partners/[id]/page.jsx
+// src/app/(site)/partners/[id]/page.jsx
+"use client";
+
 import Image from "next/image";
-import { notFound } from "next/navigation";
-import partners from "@/data/partners.json" assert { type: "json" };
+import { useParams, notFound } from "next/navigation";
+import { useAppData } from "@/store/appData";
 
 /* ---------- Helpers ---------- */
-function getPartner(id) {
-  return (partners || []).find((p) => p.id === id);
-}
-
 function splitParagraphs(text) {
   if (!text) return [];
   return text
@@ -16,33 +14,21 @@ function splitParagraphs(text) {
     .filter(Boolean);
 }
 
-/* ---------- Static params for prerender ---------- */
-export function generateStaticParams() {
-  return (partners || []).map((p) => ({ id: p.id }));
-}
-
-/* ---------- SEO ---------- */
-export function generateMetadata({ params }) {
-  const p = getPartner(params.id);
-  if (!p) return { title: "Partner not found" };
-  return {
-    title: `${p.name} — Partner`,
-    description: p.short_description || "Partner overview",
-  };
-}
-
 /* ---------- Page ---------- */
-export default function PartnerDetailPage({ params }) {
-  const p = getPartner(params.id);
-  if (!p) notFound();
+export default function PartnerDetailPage() {
+  const { id } = useParams(); // dynamic slug
+  const partners = useAppData((s) => s.partners || []);
+
+  // find by slug or fallback to _id
+  const p = partners.find((p) => p.slug === id || p._id === id);
+  if (!p) return notFound();
 
   const paragraphs = splitParagraphs(p.description);
 
   return (
     <main className="bg-[#262626] text-white">
-      {/* HERO (same geometry as Terms page: 423px) */}
+      {/* HERO */}
       <section className="relative isolate h-[423px] overflow-hidden">
-        {/* Background image — use your shared hero, e.g. /gradient.svg */}
         <Image
           src="/gradient.svg"
           alt=""
@@ -50,7 +36,6 @@ export default function PartnerDetailPage({ params }) {
           priority
           className="pointer-events-none select-none object-cover object-center"
         />
-        {/* optional soft overlay for readability */}
         <div className="absolute inset-0 bg-black/15" />
 
         <div className="relative z-10 mx-auto flex h-full max-w-6xl items-center justify-center px-4 text-center">
@@ -67,13 +52,12 @@ export default function PartnerDetailPage({ params }) {
         </div>
       </section>
 
-      {/* CONTENT (pushed down a bit for nicer rhythm under the hero) */}
+      {/* CONTENT */}
       <section className="relative pt-10 sm:pt-12 lg:pt-16 pb-16 sm:pb-20 lg:pb-24">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 sm:px-6 lg:grid-cols-12 lg:px-8">
           {/* LEFT: info card */}
           <aside className="lg:col-span-5">
             <div className="overflow-hidden rounded-2xl bg-white text-[#1b1d1e] shadow ring-1 ring-black/10">
-              {/* Logo */}
               <div className="grid place-items-center bg-white px-6 pt-6">
                 <Image
                   src={p.logo}
@@ -85,7 +69,6 @@ export default function PartnerDetailPage({ params }) {
               </div>
 
               <div className="space-y-5 px-6 pb-6 pt-4">
-                {/* Visit website */}
                 {p.website && p.website !== "#" && (
                   <a
                     href={p.website}
@@ -100,7 +83,6 @@ export default function PartnerDetailPage({ params }) {
                   </a>
                 )}
 
-                {/* Optional fields if present in JSON */}
                 {p.specialization && (
                   <div>
                     <h4 className="font-semibold">Specialization</h4>
@@ -126,24 +108,21 @@ export default function PartnerDetailPage({ params }) {
                   </div>
                 )}
 
-                {/* Store badges */}
-                {(p.links?.google_play ||
-                  p.links?.app_store ||
-                  p.links?.app_gallery) && (
+                {(p.googlePlay || p.appStore || p.appGallery) && (
                   <div className="flex flex-wrap gap-2 pt-2">
-                    {p.links?.google_play && (
+                    {p.googlePlay && (
                       <a
-                        href={p.links.google_play}
+                        href={p.googlePlay}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center rounded-md bg-black/90 px-3 py-1.5 text-xs font-semibold text-white"
                       >
-                        GET IT ON Google play
+                        GET IT ON Google Play
                       </a>
                     )}
-                    {p.links?.app_store && (
+                    {p.appStore && (
                       <a
-                        href={p.links.app_store}
+                        href={p.appStore}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center rounded-md bg-black/90 px-3 py-1.5 text-xs font-semibold text-white"
@@ -151,9 +130,9 @@ export default function PartnerDetailPage({ params }) {
                         Download App Store
                       </a>
                     )}
-                    {p.links?.app_gallery && (
+                    {p.appGallery && (
                       <a
-                        href={p.links.app_gallery}
+                        href={p.appGallery}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center rounded-md bg-black/90 px-3 py-1.5 text-xs font-semibold text-white"
@@ -177,7 +156,7 @@ export default function PartnerDetailPage({ params }) {
               {paragraphs.length ? (
                 paragraphs.map((para, idx) => <p key={idx}>{para}</p>)
               ) : (
-                <p>{p.short_description}</p>
+                <p>{p.shortDesc}</p>
               )}
             </div>
           </div>

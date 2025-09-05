@@ -1,24 +1,30 @@
+// src/app/(site)/partners/page.jsx
 "use client";
 
+import { useMemo } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import partners from "@/data/partners.json" assert { type: "json" };
+import { useAppData } from "@/store/appData";
 
 /* ---------- helpers ---------- */
-function getUniquePartners(data) {
-  const seen = new Set();
-  const out = [];
-  for (const p of data ?? []) {
-    if (!p?.id || seen.has(p.id)) continue;
-    if (!p?.logo || !p?.name) continue;
-    seen.add(p.id);
-    out.push(p);
-  }
-  return out;
+function transformPartners(apiData = []) {
+  return apiData.map((p) => ({
+    id: p.slug || p._id,
+    name: p.name,
+    logo: p.logo,
+    short_description: p.shortDesc,
+    description: p.description,
+    website: p.website || "#",
+    links: {
+      google_play: p.googlePlay || "#",
+      app_store: p.appStore || "#",
+      app_gallery: p.appGallery || "#",
+    },
+  }));
 }
 
 function StoreBadge({ href, label }) {
-  if (!href) return null;
+  if (!href || href === "#") return null;
   return (
     <a
       href={href}
@@ -57,7 +63,7 @@ const bottomIn = {
   show: { opacity: 1, y: 0, transition: SPRING },
 };
 
-/* ---------- Card (animated) ---------- */
+/* ---------- Card ---------- */
 function PartnerCard({ p, i }) {
   return (
     <motion.article
@@ -66,10 +72,10 @@ function PartnerCard({ p, i }) {
       whileInView="show"
       viewport={{ once: true, amount: 0.25 }}
       transition={{ ...SPRING, delay: 0.06 * i }}
-      className="w-full lg:w-1/3 max-w-[420px] min-w-[360px]"
+      className="w-full lg:w-1/3 max-w-[420px] min-w-[320px]"
     >
       <div className="flex h-full flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-black/10 shadow-sm">
-        {/* Logo area */}
+        {/* Logo */}
         <div className="relative grid h-40 w-full place-items-center bg-white">
           <Image
             src={p.logo}
@@ -77,7 +83,6 @@ function PartnerCard({ p, i }) {
             width={340}
             height={160}
             className="max-h-24 w-auto object-contain"
-            priority={false}
           />
         </div>
 
@@ -90,20 +95,17 @@ function PartnerCard({ p, i }) {
 
           <LearnMoreLink website={p.website} id={p.id} />
 
-          {(p.links?.google_play ||
-            p.links?.app_store ||
-            p.links?.app_gallery) && (
+          {(p.links.google_play ||
+            p.links.app_store ||
+            p.links.app_gallery) && (
             <div className="mt-3 flex flex-wrap gap-2">
               <StoreBadge
-                href={p.links?.google_play}
-                label="GET IT ON Google play"
+                href={p.links.google_play}
+                label="GET IT ON Google Play"
               />
+              <StoreBadge href={p.links.app_store} label="Download App Store" />
               <StoreBadge
-                href={p.links?.app_store}
-                label="Download App Store"
-              />
-              <StoreBadge
-                href={p.links?.app_gallery}
+                href={p.links.app_gallery}
                 label="Download AppGallery"
               />
             </div>
@@ -116,17 +118,18 @@ function PartnerCard({ p, i }) {
 
 /* ---------- Page ---------- */
 export default function PartnersPage() {
-  const data = getUniquePartners(partners);
+  // 1) read raw partners from Zustand
+  const raw = useAppData((s) => s.partners);
+
+  // 2) normalize to the shape this page expects
+  const partners = useMemo(() => transformPartners(raw || []), [raw]);
 
   return (
     <main className="bg-[#262626]">
-      {/* HERO (full image visible) */}
+      {/* HERO */}
       <section className="relative isolate overflow-hidden">
-        {/* Fixed-height wrapper so the whole background is visible */}
         <div className="relative mx-auto w-full">
-          {/* match your artboard: 423px on large, scale down on smaller */}
           <div className="h-[260px] sm:h-[320px] lg:h-[423px]" />
-          {/* background image layer */}
           <div className="absolute inset-0 -z-10">
             <Image
               src="/partners/partnersHeroBG.svg"
@@ -135,12 +138,10 @@ export default function PartnersPage() {
               priority
               className="object-cover object-center"
             />
-            {/* soft overlays */}
             <div className="absolute inset-0 bg-black/35" />
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_40%_at_50%_20%,rgba(237,249,0,0.22),transparent_60%)]" />
           </div>
 
-          {/* hero content */}
           <div className="absolute inset-0 flex items-center">
             <div className="mx-auto max-w-6xl px-4">
               <motion.h1
@@ -162,23 +163,25 @@ export default function PartnersPage() {
               >
                 We work alongside trusted partners who share our passion for
                 innovation, quality, and excellence in sports. Together, we
-                create impactful solutions that elevate the sports experience
-                for clubs, fans, and communities.
+                create impactful solutions that elevate the sports experience.
               </motion.p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* GRID (always centered last row) */}
+      {/* GRID */}
       <section className="relative py-12 md:py-16 lg:py-20">
-        <div className="mx-auto max-w-10/12 ">
-          {/* use flex-wrap + justify-center so incomplete rows are centered */}
-          <div className="flex flex-wrap justify-center gap-6 lg:gap-6">
-            {data.map((p, i) => (
-              <PartnerCard key={p.id} p={p} i={i} />
-            ))}
-          </div>
+        <div className="mx-auto max-w-10/12">
+          {partners.length === 0 ? (
+            <p className="text-center text-white/70">No partners to display.</p>
+          ) : (
+            <div className="flex flex-wrap justify-center gap-6 lg:gap-6">
+              {partners.map((p, i) => (
+                <PartnerCard key={p.id || `${p.name}-${i}`} p={p} i={i} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </main>

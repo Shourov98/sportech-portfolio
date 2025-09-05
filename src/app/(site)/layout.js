@@ -3,6 +3,7 @@ import "../globals.css";
 import NavBar from "@/components/nav/NavBar";
 import Footer from "@/components/Footer";
 import EdgeSoftOrbsTop from "@/components/EdgeSoftOrbsTop";
+import AppDataBootstrap from "@/components/AppDataBootstrap";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className="bg-[#0f1111] text-white">
         {/* global translucent navbar */}
+        <AppDataBootstrap />
         <NavBar />
         {children}
         <EdgeSoftOrbsTop

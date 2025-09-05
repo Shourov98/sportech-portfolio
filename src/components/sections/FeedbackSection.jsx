@@ -1,7 +1,9 @@
+// src/components/FeedbackSection.jsx
 "use client";
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useAppData } from "@/store/appData"; // ← pull from zustand
 
 /* smooth spring */
 const SPRING = { type: "spring", stiffness: 120, damping: 24, mass: 1 };
@@ -18,17 +20,26 @@ const rightIn = {
   show: { opacity: 1, x: 0, transition: SPRING },
 };
 
-/**
- * FeedbackSection (animated)
- * - Title: enters from top
- * - Cards: 1 & 3 from left, 2 & 4 from right
- * - Colors (md+ 2x2): [0]=white, [1]=yellow, [2]=yellow, [3]=white
- */
 export default function FeedbackSection({
   title = "What Our Clients Say",
   ringSrc = "/feedback/ring.svg",
-  items = defaultFeedbacks,
+  items = defaultFeedbacks, // prop fallback
 }) {
+  // ---- Read from Zustand
+  const storeFeedback = useAppData((s) => s.feedback);
+
+  // Prefer store data if available, otherwise use `items` prop (then default)
+  const list =
+    Array.isArray(storeFeedback) && storeFeedback.length > 0
+      ? storeFeedback.map((f) => ({
+          // normalize keys from API → UI (with safe fallbacks)
+          name: f.name || "Anonymous",
+          stars: Number(f.stars) || 5,
+          avatar: f.avatar || "/feedback/profile-1.jpg",
+          message: f.message || "",
+        }))
+      : items;
+
   return (
     <section className="relative bg-[#262626] py-14 sm:py-18 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -57,15 +68,13 @@ export default function FeedbackSection({
 
         {/* Cards */}
         <div className="relative mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
-          {items.map((f, i) => {
-            // Color logic for 2x2 layout: [0]=white, [1]=yellow, [2]=yellow, [3]=white
+          {list.map((f, i) => {
             const isYellow = i === 1 || i === 2;
-            // Motion direction: 0 & 2 from left, 1 & 3 from right
             const dirVariant = i % 2 === 0 ? leftIn : rightIn;
 
             return (
               <motion.article
-                key={i}
+                key={`${f.name}-${i}`}
                 variants={dirVariant}
                 initial="hidden"
                 whileInView="show"
@@ -125,7 +134,7 @@ function Stars({ count = 5 }) {
   );
 }
 
-/* Demo data */
+/* Local demo fallback */
 const defaultFeedbacks = [
   {
     name: "Sarah Malik",
