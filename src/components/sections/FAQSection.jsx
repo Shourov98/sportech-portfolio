@@ -187,7 +187,7 @@ export default function FAQSection() {
         {/* CTA */}
         <div className="mt-10 flex justify-center">
           <a
-            href="#contact"
+            href="/contact-us"
             className="inline-flex items-center gap-2 rounded-2xl bg-[#EDF900] px-6 py-3 text-sm font-semibold text-black shadow-[0_8px_30px_rgba(0,0,0,0.25)] hover:brightness-95"
           >
             Contact Us

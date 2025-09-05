@@ -3,6 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { services, slugify } from "@/data/services";
 import AnimatedSwapButton from "@/components/AnimatedSwapButton";
+import FAQSection from "@/components/sections/FAQSection";
 
 // Optional local FAQ (or import your existing FAQ component)
 const faqs = [
@@ -114,7 +115,8 @@ export default function ServicePage({ params }) {
       </section>
 
       {/* FAQ */}
-      <section className="pb-24">
+      <FAQSection faqs={service.faqs} />
+      {/* <section className="pb-24">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <h3 className="text-center text-[clamp(22px,4vw,32px)] font-extrabold text-[#EDF900] mb-6">
             FAQ
@@ -139,7 +141,7 @@ export default function ServicePage({ params }) {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }
