@@ -1,6 +1,11 @@
-// app/reset-password/page.jsx (Server Component)
+// app/reset-password/page.jsx
+import { Suspense } from "react";
 import ResetPasswordForm from "./ResetPasswordForm";
 
-export default function ResetPasswordPage({ searchParams }) {
-  return <ResetPasswordForm searchParams={searchParams} />;
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading…</div>}>
+      <ResetPasswordForm />
+    </Suspense>
+  );
 }

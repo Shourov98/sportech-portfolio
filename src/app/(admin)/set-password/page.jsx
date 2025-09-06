@@ -1,6 +1,10 @@
+import { Suspense } from "react";
 import SetPasswordForm from "./SetPasswordForm";
 
-export default function Page({ searchParams }) {
-  // Next.js provides `searchParams` here on the server.
-  return <SetPasswordForm searchParams={searchParams} />;
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading…</div>}>
+      <SetPasswordForm />
+    </Suspense>
+  );
 }
