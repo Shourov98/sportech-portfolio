@@ -95,7 +95,7 @@ export default function TeamManager() {
 
   function openEdit(member) {
     setMode("edit");
-    setEditingId(member.id);
+    setEditingId(member._id);
     setName(member.name || "");
     setRole(member.role || "");
     setPhotoUrl(member.photo || "");

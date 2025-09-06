@@ -1,7 +1,10 @@
+// src/components/sections/TeamSection.jsx
 "use client";
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useMemo } from "react";
+import { useAppData } from "@/store/appData"; // ← your zustand store
 
 const container = {
   hidden: {},
@@ -20,7 +23,23 @@ const item = {
   },
 };
 
-export default function TeamSection({ team = defaultTeam }) {
+export default function TeamSection() {
+  const rawTeam = useAppData((s) => s.team || []);
+
+  // Normalize API → UI shape
+  const team = useMemo(() => {
+    return (
+      (rawTeam || [])
+        .map((m) => ({
+          name: m.name || m.fullName || "",
+          role: m.role || m.designation || "",
+          src: m.photo || m.image || m.avatar || "/team/placeholder.png", // local fallback
+        }))
+        // keep only members that at least have a name + img
+        .filter((m) => m.name && m.src)
+    );
+  }, [rawTeam]);
+
   return (
     <section className="relative bg-[#262626] py-16 sm:py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -43,64 +62,51 @@ export default function TeamSection({ team = defaultTeam }) {
           viewport={{ once: true, amount: 0.2 }}
           className="mt-10 flex flex-wrap justify-center gap-6"
         >
-          {team.map((m) => (
-            <motion.li
-              key={m.name}
-              variants={item}
-              className="w-[min(90vw,320px)] sm:w-[300px]"
-            >
-              <figure className="group relative overflow-hidden rounded-2xl ring-1 ring-white/10 bg-black/10">
-                {/* Image */}
-                <div className="relative aspect-[4/3] w-full">
-                  <Image
-                    src={m.src}
-                    alt={m.name}
-                    fill
-                    sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
-                    className="object-cover transition duration-500 group-hover:scale-[1.04]"
-                    priority={false}
-                  />
-                </div>
-
-                {/* Glass overlay on hover */}
-                <figcaption
-                  className="
-                    pointer-events-none absolute inset-0 grid place-items-center
-                    opacity-0 transition-opacity duration-300
-                    group-hover:opacity-100
-                  "
-                >
-                  <div
-                    className="
-                      mx-6 w-full max-w-xs rounded-2xl
-                      bg-white/10 backdrop-blur-md
-                      ring-1 ring-white/20
-                      shadow-[0_20px_60px_rgba(0,0,0,.45)]
-                      px-6 py-5 text-center
-                    "
-                  >
-                    <div className="text-white font-bold text-lg">{m.name}</div>
-                    <div className="mt-2 h-px w-24 mx-auto bg-white/80" />
-                    <div className="mt-2 text-white/90 text-sm">{m.role}</div>
+          {team.length === 0 ? (
+            <li className="text-white/70">No team members to display.</li>
+          ) : (
+            team.map((m, idx) => (
+              <motion.li
+                key={`${m.name}-${idx}`}
+                variants={item}
+                className="w-[min(90vw,320px)] sm:w-[300px]"
+              >
+                <figure className="group relative overflow-hidden rounded-2xl ring-1 ring-white/10 bg-black/10">
+                  {/* Image */}
+                  <div className="relative aspect-[4/3] w-full">
+                    <Image
+                      src={m.src}
+                      alt={m.name}
+                      fill
+                      sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+                      className="object-cover transition duration-500 group-hover:scale-[1.04]"
+                      priority={false}
+                      onError={(e) => {
+                        // graceful fallback if remote image fails
+                        e.currentTarget.src = "/team/placeholder.png";
+                      }}
+                    />
                   </div>
-                </figcaption>
 
-                {/* Subtle neon edge on hover */}
-                <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-transparent group-hover:ring-[#b7a6ff]/60 transition" />
-              </figure>
-            </motion.li>
-          ))}
+                  {/* Glass overlay on hover */}
+                  <figcaption className="pointer-events-none absolute inset-0 grid place-items-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <div className="mx-6 w-full max-w-xs rounded-2xl bg-white/10 backdrop-blur-md ring-1 ring-white/20 shadow-[0_20px_60px_rgba(0,0,0,.45)] px-6 py-5 text-center">
+                      <div className="text-white font-bold text-lg">
+                        {m.name}
+                      </div>
+                      <div className="mt-2 h-px w-24 mx-auto bg-white/80" />
+                      <div className="mt-2 text-white/90 text-sm">{m.role}</div>
+                    </div>
+                  </figcaption>
+
+                  {/* Subtle neon edge on hover */}
+                  <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-transparent group-hover:ring-[#b7a6ff]/60 transition" />
+                </figure>
+              </motion.li>
+            ))
+          )}
         </motion.ul>
       </div>
     </section>
   );
 }
-
-/* --------- Example data (replace src with your actual images in /public/team/...) --------- */
-const defaultTeam = [
-  { name: "Fahad Al-Mutairi", role: "Founder & CEO", src: "/team/Team1.png" },
-  { name: "Sara Al-Hassan", role: "Head of Product", src: "/team/Team2.png" },
-  { name: "Omar Al-Harbi", role: "Engineering Lead", src: "/team/Team3.png" },
-  { name: "Lina Al-Qahtani", role: "UX Lead", src: "/team/Team4.png" },
-  { name: "Maya Al-Anazi", role: "Marketing Manager", src: "/team/Team5.png" },
-];

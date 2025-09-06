@@ -80,6 +80,8 @@ export const useAppData = create()(
             fetchedAt: Date.now(),
             error: null,
           });
+
+          console.log("team", team);
         } catch (err) {
           console.error("fetchAll failed:", err);
           set({ error: err?.message || "Failed to load data" });
