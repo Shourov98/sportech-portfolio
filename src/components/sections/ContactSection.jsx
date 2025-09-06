@@ -1,10 +1,11 @@
 "use client";
+import { useState } from "react";
 import { motion } from "framer-motion";
 
 const SPRING = {
   type: "spring",
-  stiffness: 100, // lower = slower
-  damping: 32, // higher = smoother settle
+  stiffness: 100,
+  damping: 32,
   mass: 1.1,
   bounce: 0.05,
   restDelta: 0.001,
@@ -14,18 +15,82 @@ const leftIn = {
   hidden: { opacity: 0, x: -160, y: -60 },
   show: { opacity: 1, x: 0, transition: SPRING },
 };
-
 const rightIn = {
   hidden: { opacity: 0, x: 120, y: -60 },
   show: { opacity: 1, x: 0, transition: SPRING },
 };
-
 const downIn = {
   hidden: { opacity: 0, y: -60 },
   show: { opacity: 1, y: 0, transition: SPRING },
 };
 
 export default function ContactSection() {
+  // form state
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
+
+  // ui state
+  const [submitting, setSubmitting] = useState(false);
+  const [status, setStatus] = useState({ type: "", text: "" }); // "success" | "error" | ""
+
+  const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/contact/send-message`;
+
+  async function onSubmit(e) {
+    e.preventDefault();
+    setStatus({ type: "", text: "" });
+
+    // simple client validation
+    if (!firstName.trim() || !email.trim() || !message.trim()) {
+      setStatus({
+        type: "error",
+        text: "First name, email and message are required.",
+      });
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ firstName, lastName, email, phone, message }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(
+          data?.error || data?.message || "Failed to send message."
+        );
+      }
+
+      setStatus({
+        type: "success",
+        text: data?.message || "Message sent successfully!",
+      });
+
+      // reset form
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPhone("");
+      setMessage("");
+    } catch (err) {
+      setStatus({
+        type: "error",
+        text: err.message || "Something went wrong.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
     <section
       id="contact"
@@ -43,9 +108,8 @@ export default function ContactSection() {
           Contact Us
         </motion.h2>
 
-        {/* Cards */}
         <div className="mt-10 grid grid-cols-1 gap-6 md:mt-12 md:grid-cols-2 md:gap-8">
-          {/* Left: Get in touch */}
+          {/* Left card */}
           <motion.div
             className="rounded-2xl border border-black/5 bg-white/5 p-5 sm:p-6 lg:p-7 backdrop-blur-3xl"
             variants={leftIn}
@@ -58,11 +122,9 @@ export default function ContactSection() {
                 <h3 className="text-white text-[clamp(22px,3.4vw,36px)] font-bold">
                   Get in touch
                 </h3>
-
                 <ul className="space-y-4 text-white">
                   <li className="flex items-start gap-3">
                     <IconBadge>
-                      {/* replace with your own SVG */}
                       <svg
                         viewBox="0 0 24 24"
                         className="h-5 w-5"
@@ -125,7 +187,6 @@ export default function ContactSection() {
                   Follow our social media
                 </h3>
                 <div className="flex items-center gap-4 sm:gap-6">
-                  {/* Replace placeholders with your SVG icons */}
                   <SocialBox ariaLabel="Facebook">
                     <svg
                       viewBox="0 0 24 24"
@@ -180,35 +241,51 @@ export default function ContactSection() {
                 Send us message
               </h3>
 
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault(); /* handle submit */
-                }}
-                className="mt-6 space-y-4"
-              >
+              {/* status message */}
+              {status.text && (
+                <p
+                  className={`mt-4 rounded-lg px-3 py-2 text-sm ${
+                    status.type === "success"
+                      ? "bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30"
+                      : "bg-red-500/15 text-red-300 ring-1 ring-red-500/30"
+                  }`}
+                >
+                  {status.text}
+                </p>
+              )}
+
+              <form onSubmit={onSubmit} className="mt-6 space-y-4">
                 {/* Names */}
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Field label="First Name *">
+                    <input
+                      type="text"
+                      placeholder="First Name"
+                      className={inputCls}
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      required
+                    />
+                  </Field>
                   <Field label="Last Name">
                     <input
                       type="text"
                       placeholder="Last Name"
                       className={inputCls}
-                    />
-                  </Field>
-                  <Field label="First Name">
-                    <input
-                      type="text"
-                      placeholder="First Name"
-                      className={inputCls}
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
                     />
                   </Field>
                 </div>
 
-                <Field label="Email">
+                <Field label="Email *">
                   <input
                     type="email"
                     placeholder="Email"
                     className={inputCls}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                 </Field>
 
@@ -217,22 +294,28 @@ export default function ContactSection() {
                     type="tel"
                     placeholder="Phone Number"
                     className={inputCls}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                   />
                 </Field>
 
-                <Field label="Message">
+                <Field label="Message *">
                   <textarea
                     rows={4}
                     placeholder="Message"
                     className={inputCls + " resize-none"}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    required
                   />
                 </Field>
 
                 <button
                   type="submit"
-                  className="mt-4 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#EDF900] px-6 py-3 font-semibold text-black shadow-[0_8px_30px_rgba(0,0,0,0.25)] hover:brightness-95"
+                  disabled={submitting}
+                  className="mt-4 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#EDF900] px-6 py-3 font-semibold text-black shadow-[0_8px_30px_rgba(0,0,0,0.25)] hover:brightness-95 disabled:opacity-60"
                 >
-                  Submit
+                  {submitting ? "Submitting…" : "Submit"}
                   <span className="inline-grid size-6 place-items-center rounded-md bg-black/85 text-white">
                     »
                   </span>
