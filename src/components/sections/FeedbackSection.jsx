@@ -2,10 +2,10 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { useAppData } from "@/store/appData"; // ← pull from zustand
+import { motion, useReducedMotion } from "framer-motion";
+import { useAppData } from "@/store/appData";
 
-/* smooth spring */
+/* springs & variants */
 const SPRING = { type: "spring", stiffness: 120, damping: 24, mass: 1 };
 const topIn = {
   hidden: { opacity: 0, y: -32 },
@@ -20,19 +20,29 @@ const rightIn = {
   show: { opacity: 1, x: 0, transition: SPRING },
 };
 
+/* parent with stagger so children cascade in */
+const listStagger = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.1, // time between items
+      delayChildren: 0.05, // initial delay
+    },
+  },
+};
+
 export default function FeedbackSection({
   title = "What Our Clients Say",
   ringSrc = "/feedback/ring.svg",
-  items = defaultFeedbacks, // prop fallback
+  items = defaultFeedbacks,
 }) {
-  // ---- Read from Zustand
-  const storeFeedback = useAppData((s) => s.feedback);
+  const prefersReducedMotion = useReducedMotion();
 
-  // Prefer store data if available, otherwise use `items` prop (then default)
+  // read from store if present, else fallback to prop/defaults
+  const storeFeedback = useAppData((s) => s.feedback);
   const list =
     Array.isArray(storeFeedback) && storeFeedback.length > 0
       ? storeFeedback.map((f) => ({
-          // normalize keys from API → UI (with safe fallbacks)
           name: f.name || "Anonymous",
           stars: Number(f.stars) || 5,
           avatar: f.avatar || "/feedback/profile-1.jpg",
@@ -66,20 +76,26 @@ export default function FeedbackSection({
           />
         </div>
 
-        {/* Cards */}
-        <div className="relative mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
+        {/* Cards with staggered entrance */}
+        <motion.div
+          variants={prefersReducedMotion ? undefined : listStagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.35 }}
+          className="relative mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8"
+        >
           {list.map((f, i) => {
             const isYellow = i === 1 || i === 2;
-            const dirVariant = i % 2 === 0 ? leftIn : rightIn;
+            const dirVariant = prefersReducedMotion
+              ? undefined
+              : i % 2 === 0
+              ? leftIn
+              : rightIn;
 
             return (
               <motion.article
                 key={`${f.name}-${i}`}
                 variants={dirVariant}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.35 }}
-                transition={{ ...SPRING, delay: 0.08 * i }}
                 className={[
                   "rounded-2xl p-5 sm:p-6 lg:p-7 shadow-[0_8px_30px_rgba(0,0,0,0.25)]",
                   isYellow ? "bg-[#EDF900] text-black" : "bg-white text-black",
@@ -109,7 +125,7 @@ export default function FeedbackSection({
               </motion.article>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -134,7 +150,7 @@ function Stars({ count = 5 }) {
   );
 }
 
-/* Local demo fallback */
+/* Demo fallback */
 const defaultFeedbacks = [
   {
     name: "Sarah Malik",
