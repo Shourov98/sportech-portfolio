@@ -67,7 +67,7 @@ export default function FAQSection() {
   }, [faqsFromStore]);
 
   return (
-    <section id="faq" className="relative bg-[#262626] py-16 sm:py-20 lg:py-28">
+    <section id="faq" className="relative bg-[#262626] py-8 md:py-10 lg:py-12">
       <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
         {/* Title + tilted capsule */}
         <div className="relative mx-auto mb-8 text-center sm:mb-10">
@@ -129,8 +129,8 @@ export default function FAQSection() {
                     className={[
                       "grid size-9 place-items-center rounded-full border transition",
                       isOpen
-                        ? "border-[#EDF900] bg-white/10"
-                        : "border-white/20 bg-white/[0.06]",
+                        ? "border-[#262626] bg-white/60"
+                        : "border-white/80 bg-white/60",
                     ].join(" ")}
                     aria-hidden="true"
                   >

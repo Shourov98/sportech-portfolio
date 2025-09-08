@@ -28,7 +28,7 @@ export default function ObjectivesSection({
   subtitle = "Innovating Sports, Empowering Experiences",
 }) {
   return (
-    <section className="relative bg-[#262626] py-16 sm:py-20 lg:py-28">
+    <section className="relative bg-[#262626] py-8 md:py-10 lg:py-12">
       <div className="mx-auto w-full max-w-[1331px] px-4 sm:px-6 lg:px-8">
         {/* Heading */}
         <div className="text-center">

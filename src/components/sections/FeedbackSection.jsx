@@ -51,7 +51,7 @@ export default function FeedbackSection({
       : items;
 
   return (
-    <section className="relative bg-[#262626] py-14 sm:py-18 lg:py-24">
+    <section className="relative bg-[#262626] py-8 md:py-10 lg:py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Title */}
         <motion.h2
@@ -71,7 +71,7 @@ export default function FeedbackSection({
             alt=""
             width={496}
             height={496}
-            className="absolute md:top-[152px] left-1/2 -translate-x-1/2 w-[496px] h-[496px] opacity-70 select-none pointer-events-none"
+            className="absolute md:top-[110px] left-1/2 -translate-x-1/2 w-[496px] h-[496px] opacity-70 select-none pointer-events-none"
             priority
           />
         </div>

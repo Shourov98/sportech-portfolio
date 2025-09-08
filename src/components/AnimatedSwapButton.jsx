@@ -3,21 +3,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-/**
- * AnimatedSwapButton
- * - On hover: bg animates to hoverColor, the arrow chip slides to the front (left)
- * - On exit: everything reverses smoothly
- *
- * Props:
- *  - href?: string (renders <a> when provided; otherwise a <button>)
- *  - onClick?: () => void
- *  - children: label text (e.g., "Contact Us")
- *  - arrow: string | ReactNode (default: »)
- *  - baseColor: string (default: "#EDF900")
- *  - hoverColor: string (default: "#22c55e") // Tailwind green-500
- *  - size: "sm" | "md" | "lg" (padding + font-size)
- *  - className?: string (append more Tailwind utilities, e.g. "w-full")
- */
 export default function AnimatedSwapButton({
   href,
   onClick,
@@ -45,7 +30,9 @@ export default function AnimatedSwapButton({
     animate: { backgroundColor: hovered ? hoverColor : baseColor },
     transition: { type: "spring", stiffness: 260, damping: 26 },
     className: `
-      inline-flex items-center rounded-2xl font-semibold text-black
+      inline-flex items-center justify-center gap-2
+      rounded-2xl font-semibold text-black text-center leading-none
+      whitespace-nowrap
       shadow-[0_8px_30px_rgba(0,0,0,0.25)]
       ${sizeCls} ${className}
     `,
@@ -56,11 +43,9 @@ export default function AnimatedSwapButton({
     <motion.span
       layout
       transition={{ type: "spring", stiffness: 260, damping: 26 }}
-      className={
-        hovered
-          ? "order-1 mr-2 grid size-6 place-items-center rounded-md bg-black/85 text-white"
-          : "order-2 ml-2 grid size-6 place-items-center rounded-md bg-black/85 text-white"
-      }
+      className={`grid size-6 place-items-center rounded-md bg-black/85 text-white ${
+        hovered ? "order-1" : "order-2"
+      }`}
     >
       {arrow}
     </motion.span>
@@ -70,14 +55,14 @@ export default function AnimatedSwapButton({
     <motion.span
       layout
       transition={{ type: "spring", stiffness: 260, damping: 26 }}
-      className={hovered ? "order-2" : "order-1"}
+      className={`${hovered ? "order-2" : "order-1"} text-center`}
     >
       {children}
     </motion.span>
   );
 
-  // Render <a> when href is provided; otherwise render <button>
   if (href) {
+    // Note: className comes from commonProps; remove the extra className here so it doesn't get overridden
     return (
       <motion.a href={href} {...commonProps}>
         {Arrow}

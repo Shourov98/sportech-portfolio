@@ -41,7 +41,7 @@ export default function TeamSection() {
   }, [rawTeam]);
 
   return (
-    <section className="relative bg-[#262626] py-16 sm:py-20 lg:py-28">
+    <section className="relative bg-[#262626] py-8 md:py-10 lg:py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Heading */}
         <div className="text-center">

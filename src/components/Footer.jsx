@@ -32,7 +32,7 @@ export default async function Footer() {
   const legal = [
     { label: "Privacy Policy", href: "/privacy-policy" },
     { label: "Terms & conditions", href: "/terms-conditions" },
-    { label: "FAQ", href: "/faq" },
+    { label: "FAQ", href: "/about-us#faq" },
   ];
 
   // ----- fetch live contact -----

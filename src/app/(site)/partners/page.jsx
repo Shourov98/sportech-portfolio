@@ -92,7 +92,7 @@ function PartnerCard({ p }) {
             src={p.logo}
             alt={p.name}
             width={340}
-            height={160}
+            height={250}
             className="max-h-24 w-auto object-contain"
           />
         </div>

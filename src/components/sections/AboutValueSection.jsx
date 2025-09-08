@@ -128,7 +128,7 @@ const defaultItems = [
   },
   {
     frame: "/values/Frame70.svg",
-    icon: "/values/Innovation.svg", // you asked for Innovation.svg again
+    icon: "/values/Partnership.svg", // you asked for Innovation.svg again
     titleAlt: "Partnership",
   },
 ];

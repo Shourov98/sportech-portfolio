@@ -101,7 +101,7 @@ export default async function PrivacyPolicyPage() {
         />
 
         <div className="mx-auto max-w-6xl px-4 py-12 sm:py-16 lg:py-20 text-center">
-          <h1 className="pt-10 text-[clamp(28px,6vw,44px)] font-extrabold tracking-tight">
+          <h1 className="pt-10 text-[clamp(28px,6vw,44px)] text-white font-extrabold tracking-tight">
             {policy.title}
           </h1>
           {policy.subtitle && (

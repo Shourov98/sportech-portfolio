@@ -117,12 +117,18 @@ export default function ServicesSection({
 
         {/* Footer CTAs */}
         {footerCtas?.length > 0 && (
-          <div className="mt-10 sm:mt-12 flex flex-wrap justify-center gap-3">
-            {footerCtas.map((cta, i) => (
-              <AnimatedSwapButton key={i} href="service">
-                {cta.label}
-              </AnimatedSwapButton>
-            ))}
+          <div className="mt-5 md:mt-7 lg:mt-10 flex flex-wrap justify-center  gap-3">
+            <div className="flex flex-col gap-3">
+              {footerCtas.map((cta, i) => (
+                <AnimatedSwapButton
+                  className="text-align-center"
+                  key={i}
+                  href={cta.href}
+                >
+                  {cta.label}
+                </AnimatedSwapButton>
+              ))}
+            </div>
           </div>
         )}
       </div>
