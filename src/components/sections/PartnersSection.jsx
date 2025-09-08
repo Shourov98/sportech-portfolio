@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
 import { useAppData } from "@/store/appData"; // ✅ bring in the store
+import AnimatedSwapButton from "../AnimatedSwapButton";
 
 export default function PartnersSectionMarquee({ duration = 28 }) {
   // 1) get partners array from Zustand
@@ -30,7 +31,7 @@ export default function PartnersSectionMarquee({ duration = 28 }) {
 
       {/* Yellow band */}
       <div className="mt-6 bg-[#EDF900]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 sm:pt-12 lg:pt-14 pb-12 sm:pb-14 lg:pb-16 overflow-hidden">
+        <div className="mx-auto max-w-8/10 px-4 sm:px-6 lg:px-8 pt-6 md:pt-10 lg:pt-12 pb-6 md:pb-10 lg:pb-12 overflow-hidden">
           {/* Intro */}
           <div className="text-center text-black">
             <h3 className="text-[clamp(20px,3.2vw,32px)] font-bold">
@@ -55,20 +56,12 @@ export default function PartnersSectionMarquee({ duration = 28 }) {
               ))}
             </div>
           </div>
-
-          {/* CTA */}
-          <div className="mt-10 sm:mt-12 flex justify-center">
-            <Link
-              href="/partners"
-              className="inline-flex items-center gap-3 rounded-2xl bg-black px-6 py-3 text-base font-semibold text-[#EDF900] shadow-[0_8px_30px_rgba(0,0,0,0.25)] hover:brightness-110"
-            >
-              View Details
-              <span className="ml-1 grid size-7 place-items-center rounded-xl bg-[#EDF900] text-black">
-                »
-              </span>
-            </Link>
-          </div>
         </div>
+      </div>
+
+      {/* CTA */}
+      <div className="mt-6 md:mt-10 lg:mt-12 flex justify-center">
+        <AnimatedSwapButton href="/partners">View Details</AnimatedSwapButton>
       </div>
 
       <style jsx global>{`
