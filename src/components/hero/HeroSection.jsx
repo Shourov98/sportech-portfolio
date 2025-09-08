@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Earth3D from "../Earth3D";
+import AnimatedSwapButton from "../AnimatedSwapButton";
 
 const container = {
   hidden: {},
@@ -80,15 +81,9 @@ export default function HeroSection() {
               variants={item}
               className="mt-8 flex items-center gap-4"
             >
-              <Link
-                href="#services"
-                className="inline-flex items-center gap-2 md:gap-3 rounded-2xl bg-[#e4ff25] px-4 py-2 md:px-6 md:py-3 text-sm md:text-base font-semibold text-black shadow-[0_8px_30px_rgba(0,0,0,0.25)] transition hover:brightness-95"
-              >
+              <AnimatedSwapButton href="/service">
                 Services & Solutions
-                <span className="ml-1 grid size-5 md:size-7 text-lg md:text-2xl place-items-center text-black">
-                  »
-                </span>
-              </Link>
+              </AnimatedSwapButton>
             </motion.div>
           </motion.div>
 

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import AnimatedSwapButton from "../AnimatedSwapButton";
 
 const SPRING = {
   type: "spring",
@@ -310,16 +311,14 @@ export default function ContactSection() {
                   />
                 </Field>
 
-                <button
+                <AnimatedSwapButton
                   type="submit"
+                  size="md"
+                  className="mt-4 w-full justify-center"
                   disabled={submitting}
-                  className="mt-4 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#EDF900] px-6 py-3 font-semibold text-black shadow-[0_8px_30px_rgba(0,0,0,0.25)] hover:brightness-95 disabled:opacity-60"
                 >
                   {submitting ? "Submitting…" : "Submit"}
-                  <span className="inline-grid size-6 place-items-center rounded-md bg-black/85 text-white">
-                    »
-                  </span>
-                </button>
+                </AnimatedSwapButton>
               </form>
             </div>
           </motion.div>

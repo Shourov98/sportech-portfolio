@@ -23,8 +23,8 @@ export default function ServicesPage() {
         subtitle="Comprehensive Digital Sports Solutions"
         description={undefined} // hide long blurb on home
         footerCtas={[
-          { label: "View More Services & Solutions", href: "/services" },
-          { label: "Contact Us", href: "/contact" },
+          { label: "View More Services & Solutions", href: "/service" },
+          { label: "Contact Us", href: "/contact-us" },
         ]}
         gridClass="md:grid-cols-2 lg:grid-cols-3" // default, can omit
       />

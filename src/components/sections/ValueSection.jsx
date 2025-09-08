@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import AnimatedSwapButton from "../AnimatedSwapButton";
 
 const SPRING = {
   type: "spring",
@@ -121,15 +122,7 @@ export default function ValuesSection() {
         viewport={{ once: true, amount: 0.5 }}
         className="mt-10 md:mt-14 flex justify-center transform-gpu will-change-transform"
       >
-        <Link
-          href="#about"
-          className="inline-flex items-center gap-3 rounded-2xl bg-[#e4ff25] px-6 py-3 text-base font-semibold text-black shadow-[0_8px_30px_rgba(0,0,0,0.25)] transition hover:brightness-95"
-        >
-          LEARN MORE
-          <span className="ml-1 grid size-7 place-items-center rounded-xl bg-black/80 text-white">
-            »
-          </span>
-        </Link>
+        <AnimatedSwapButton href="/about-us">Learn More</AnimatedSwapButton>
       </motion.div>
     </section>
   );

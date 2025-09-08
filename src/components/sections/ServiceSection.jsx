@@ -38,7 +38,7 @@ export default function ServicesSection({
   title = "Services & Solutions",
   subtitle = "Comprehensive Digital Sports Solutions",
   description,
-  footerCtas = [{ label: "See More", href: "#" }],
+  footerCtas = [{ label: "See More", href: "/service" }],
   bgClass = "bg-[#262626]",
   containerClass = "",
   gridClass = "md:grid-cols-2 lg:grid-cols-3",

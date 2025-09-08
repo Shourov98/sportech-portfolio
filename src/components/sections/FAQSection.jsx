@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useAppData } from "@/store/appData"; // ← pull from zustand
+import AnimatedSwapButton from "../AnimatedSwapButton";
 
 const SPRING = { type: "spring", stiffness: 140, damping: 18, mass: 0.9 };
 const topIn = {
@@ -186,15 +187,7 @@ export default function FAQSection() {
 
         {/* CTA */}
         <div className="mt-10 flex justify-center">
-          <a
-            href="/contact-us"
-            className="inline-flex items-center gap-2 rounded-2xl bg-[#EDF900] px-6 py-3 text-sm font-semibold text-black shadow-[0_8px_30px_rgba(0,0,0,0.25)] hover:brightness-95"
-          >
-            Contact Us
-            <span className="grid size-6 place-items-center rounded-md bg-black/85 text-white">
-              »
-            </span>
-          </a>
+          <AnimatedSwapButton href="/contact-us">Contact Us</AnimatedSwapButton>
         </div>
       </div>
     </section>

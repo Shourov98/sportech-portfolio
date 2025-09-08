@@ -53,28 +53,39 @@ function LearnMoreLink({ website, id }) {
 }
 
 /* ---------- motion presets ---------- */
-const SPRING = { type: "spring", stiffness: 120, damping: 24 };
+const SPRING = { type: "spring", stiffness: 120, damping: 24, mass: 1 };
+
 const topIn = {
   hidden: { opacity: 0, y: -36 },
   show: { opacity: 1, y: 0, transition: SPRING },
 };
-const bottomIn = {
-  hidden: { opacity: 0, y: 40 },
+
+const gridIn = {
+  hidden: { opacity: 0, y: 20 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { ...SPRING, when: "beforeChildren", staggerChildren: 0.08 },
+  },
+};
+
+const cardIn = {
+  hidden: { opacity: 0, y: 28 },
   show: { opacity: 1, y: 0, transition: SPRING },
 };
 
 /* ---------- Card ---------- */
-function PartnerCard({ p, i }) {
+function PartnerCard({ p }) {
   return (
     <motion.article
-      variants={bottomIn}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.25 }}
-      transition={{ ...SPRING, delay: 0.06 * i }}
-      className="w-full lg:w-1/3 max-w-[420px] min-w-[320px]"
+      variants={cardIn}
+      className="w-full max-w-[420px] min-w-[300px] lg:w-1/3"
     >
-      <div className="flex h-full flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-black/10 shadow-sm">
+      <motion.div
+        whileHover={{ y: -4 }}
+        transition={{ type: "spring", stiffness: 260, damping: 20 }}
+        className="flex h-full flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-black/10 shadow-sm"
+      >
         {/* Logo */}
         <div className="relative grid h-40 w-full place-items-center bg-white">
           <Image
@@ -111,17 +122,14 @@ function PartnerCard({ p, i }) {
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
     </motion.article>
   );
 }
 
 /* ---------- Page ---------- */
 export default function PartnersPage() {
-  // 1) read raw partners from Zustand
   const raw = useAppData((s) => s.partners);
-
-  // 2) normalize to the shape this page expects
   const partners = useMemo(() => transformPartners(raw || []), [raw]);
 
   return (
@@ -129,7 +137,10 @@ export default function PartnersPage() {
       {/* HERO */}
       <section className="relative isolate overflow-hidden">
         <div className="relative mx-auto w-full">
+          {/* Reserve the exact hero height for the background image */}
           <div className="h-[260px] sm:h-[320px] lg:h-[423px]" />
+
+          {/* Background */}
           <div className="absolute inset-0 -z-10">
             <Image
               src="/partners/partnersHeroBG.svg"
@@ -138,10 +149,13 @@ export default function PartnersPage() {
               priority
               className="object-cover object-center"
             />
+            {/* Optional dark overlay for legibility */}
             <div className="absolute inset-0 bg-black/35" />
+            {/* Faint radial glow */}
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_40%_at_50%_20%,rgba(237,249,0,0.22),transparent_60%)]" />
           </div>
 
+          {/* Text */}
           <div className="absolute inset-0 flex items-center">
             <div className="mx-auto max-w-6xl px-4">
               <motion.h1
@@ -149,7 +163,7 @@ export default function PartnersPage() {
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, amount: 0.8 }}
-                className="text-[clamp(28px,5.2vw,44px)] font-extrabold tracking-tight text-[#EDF900] text-center"
+                className="text-center text-[clamp(28px,5.2vw,44px)] font-extrabold tracking-tight text-[#EDF900]"
               >
                 Partner Directory
               </motion.h1>
@@ -159,7 +173,7 @@ export default function PartnersPage() {
                 whileInView="show"
                 viewport={{ once: true, amount: 0.8 }}
                 transition={{ ...SPRING, delay: 0.08 }}
-                className="mx-auto mt-3 max-w-3xl text-[clamp(14px,2.6vw,16px)] leading-7 text-white/90 text-center"
+                className="mx-auto mt-3 max-w-3xl text-center text-[clamp(14px,2.6vw,16px)] leading-7 text-white/90"
               >
                 We work alongside trusted partners who share our passion for
                 innovation, quality, and excellence in sports. Together, we
@@ -170,17 +184,23 @@ export default function PartnersPage() {
         </div>
       </section>
 
-      {/* GRID */}
+      {/* GRID (centered, responsive, animated) */}
       <section className="relative py-12 md:py-16 lg:py-20">
-        <div className="mx-auto max-w-10/12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {partners.length === 0 ? (
             <p className="text-center text-white/70">No partners to display.</p>
           ) : (
-            <div className="flex flex-wrap justify-center gap-6 lg:gap-6">
-              {partners.map((p, i) => (
-                <PartnerCard key={p.id || `${p.name}-${i}`} p={p} i={i} />
+            <motion.div
+              variants={gridIn}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.2 }}
+              className="flex flex-wrap justify-center gap-6 lg:gap-6"
+            >
+              {partners.map((p) => (
+                <PartnerCard key={p.id} p={p} />
               ))}
-            </div>
+            </motion.div>
           )}
         </div>
       </section>
