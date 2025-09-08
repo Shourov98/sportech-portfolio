@@ -64,7 +64,7 @@ export default function ServicesSection({
   return (
     <section
       id="services"
-      className={`relative ${bgClass} py-16 sm:py-20 lg:py-28 ${sectionClass}`}
+      className={`relative ${bgClass} py-10 ${sectionClass}`}
     >
       <div
         className={`mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ${containerClass}`}
@@ -77,7 +77,7 @@ export default function ServicesSection({
           viewport={{ once: true, amount: 0.6 }}
           className="text-center"
         >
-          <h2 className="font-bold text-[#e4ff25] tracking-tight text-[clamp(28px,5vw,56px)]">
+          <h2 className="font-bold text-white tracking-tight text-[clamp(28px,5vw,56px)]">
             {title}
           </h2>
           {subtitle && (
@@ -98,7 +98,7 @@ export default function ServicesSection({
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.35 }}
-          className={`mt-10 grid grid-cols-1 items-stretch gap-6 sm:gap-7 ${gridClass}`}
+          className={`mt-10 grid grid-cols-1 items-stretch gap-4 space-x-7  sm:gap-7 ${gridClass}`}
         >
           {list.map((s, i) => (
             <ServiceCard
@@ -147,9 +147,9 @@ export function ServiceCard({
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className="flex h-full flex-col rounded-2xl bg-white ring-4 ring-white/90 shadow-md"
     >
-      <div className="flex h-full flex-col p-4 sm:p-5">
+      <div className="flex h-full flex-col p-3 sm:p-5">
         {/* Icon panel */}
-        <div className="mb-4 w-full rounded-xl bg-[#262626] p-4 sm:p-6">
+        <div className="mb-4 w-full rounded-xl bg-[#262626] p-3 sm:p-4">
           <div className="relative w-full aspect-[328/191] grid place-items-center">
             <motion.img
               src={icon}

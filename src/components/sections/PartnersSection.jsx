@@ -20,7 +20,7 @@ export default function PartnersSectionMarquee({ duration = 28 }) {
   const loop = useMemo(() => [...logos, ...logos], [logos]);
 
   return (
-    <section className="relative bg-[#262626] py-12 sm:py-16 lg:py-24">
+    <section className="relative bg-[#262626] py-6 md:py-10 lg:py-12">
       {/* Heading */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h2 className="text-left text-[clamp(28px,5vw,48px)] font-bold text-white">

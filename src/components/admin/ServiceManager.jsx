@@ -116,7 +116,7 @@ export default function ServiceManager() {
   const list = useMemo(() => rows ?? [], [rows]);
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-3">
       <div>
         <h2 className="text-2xl font-bold text-white">Services</h2>
         <p className="text-white/70">

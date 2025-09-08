@@ -60,7 +60,7 @@ export default function HeroSection() {
           >
             <motion.h1
               variants={item}
-              className="text-[40px] sm:text-5xl lg:text-[56px] font-bold leading-[1.1]"
+              className="text-[40px] text-white sm:text-5xl lg:text-[56px] font-bold leading-[1.1]"
             >
               Technology Serving Sports Innovative <br /> Solutions and
               Exceptional Experiences

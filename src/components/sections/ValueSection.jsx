@@ -43,7 +43,7 @@ export default function ValuesSection() {
   return (
     <section
       id="values"
-      className="relative mx-auto max-w-full bg-[#262626] px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-28"
+      className="relative mx-auto max-w-full bg-[#262626] px-4 sm:px-6 lg:px-8 lg:py-8 md:py-6 py-2"
     >
       {/* Title */}
       <motion.h2
@@ -56,18 +56,12 @@ export default function ValuesSection() {
         Our Values
       </motion.h2>
 
-      {/* Grid with staggered animations */}
-      <motion.div
-        variants={container}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.5 }}
-        className="mt-10 p-10 grid grid-cols-1 gap-10 md:mt-14 md:grid-cols-2 md:gap-14"
-      >
-        {/* Innovation — from left */}
+      {/* Parent container: single column */}
+      <motion.div className="w-7/10 justify-center items-center flex flex-col gap-10">
+        {/* Innovation — left aligned */}
         <motion.div
           variants={leftIn}
-          className="max-w-[60ch] transform-gpu will-change-transform"
+          className="max-w-[60ch] transform-gpu will-change-transform text-left"
         >
           <h3 className="text-[clamp(18px,2.6vw,28px)] font-bold">
             Innovation
@@ -92,15 +86,15 @@ export default function ValuesSection() {
           </p>
         </motion.div>
 
-        {/* Transparency — from right */}
+        {/* Transparency — right aligned */}
         <motion.div
           variants={rightIn}
-          className="max-w-[60ch] transform-gpu will-change-transform"
+          className="max-w-[60ch] transform-gpu will-change-transform ml-auto text-right"
         >
-          <h3 className="text-[clamp(18px,2.6vw,28px)] font-bold">
+          <h3 className="text-[clamp(18px,2.6vw,28px)] text-align-left font-bold">
             Transparency
           </h3>
-          <p className="mt-3 text-white/85 leading-7 text-[clamp(14px,2.2vw,18px)]">
+          <p className="mt-3 text-white/85 text-align-left leading-7 text-[clamp(14px,2.2vw,18px)]">
             We believe in open{" "}
             <a
               href="#"
@@ -113,7 +107,6 @@ export default function ValuesSection() {
           </p>
         </motion.div>
       </motion.div>
-
       {/* CTA — from bottom */}
       <motion.div
         variants={upIn}
