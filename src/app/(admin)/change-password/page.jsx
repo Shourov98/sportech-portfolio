@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import AuthLayout from "@/components/auth/AuthLayout";
 import PasswordField from "@/components/auth/PasswordField";
 import { apiFetch } from "@/utils/api";
+import { FaLock } from "react-icons/fa";
 
 export default function ChangePasswordPage() {
   const [loading, setLoading] = useState(false);
@@ -89,21 +90,21 @@ export default function ChangePasswordPage() {
               name="currentPassword"
               label="Current Password"
               placeholder="Enter current password"
-              iconLeft={<span>🔒</span>}
+              iconLeft={<FaLock className="text-[#262626]" />}
               required
             />
             <PasswordField
               name="newPassword"
               label="New Password"
               placeholder="Type a strong password"
-              iconLeft={<span>🔒</span>}
+              iconLeft={<FaLock className="text-[#262626]" />}
               required
             />
             <PasswordField
               name="confirmPassword"
               label="Confirm password"
               placeholder="Re-type password"
-              iconLeft={<span>🔒</span>}
+              iconLeft={<FaLock className="text-[#262626]" />}
               required
             />
           </div>
