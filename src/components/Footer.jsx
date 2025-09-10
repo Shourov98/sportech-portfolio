@@ -105,7 +105,7 @@ export default async function Footer() {
           {/* Navigation */}
           <div>
             <h3 className="text-[clamp(20px,3.2vw,28px)] font-bold tracking-tight">
-              Nevigation
+              Navigation
             </h3>
             <ul className="mt-4 space-y-3 text-[clamp(14px,2.4vw,18px)] font-medium">
               {nav.map((n) => (
