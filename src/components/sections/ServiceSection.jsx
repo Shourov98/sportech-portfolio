@@ -98,7 +98,11 @@ export default function ServicesSection({
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.35 }}
-          className={`mt-10 grid grid-cols-1 items-stretch gap-4 space-x-7  sm:gap-7 ${gridClass}`}
+          className={`mt-10 grid grid-cols-1 items-stretch
+            gap-y-6  gap-x-12
+            md:gap-y-8 md:gap-x-16
+            lg:gap-y-10 lg:gap-x-20
+            ${gridClass}`}
         >
           {list.map((s, i) => (
             <ServiceCard

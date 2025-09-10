@@ -5,11 +5,10 @@ import clsx from "clsx";
 // ----- config -----
 const API_BASE =
   (typeof window !== "undefined" &&
-    (process.env.NEXT_PUBLIC_API_BASE_URL || "").replace(/\/+$/, "")) ||
+    (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/+$/, "")) ||
   "http://localhost:4000";
-const API_PREFIX = "/api";
-const ENDPOINT = (slug) =>
-  `${API_BASE}${API_PREFIX}/policies/${encodeURIComponent(slug)}`;
+
+const ENDPOINT = (slug) => `${API_BASE}/policies/${encodeURIComponent(slug)}`;
 
 // optional: read token from localStorage for admin-protected PUT
 function authHeaders() {
@@ -140,9 +139,6 @@ function PolicyEditor({ slug }) {
         <span className="rounded-full bg-[#EDF900] px-3 py-1 text-xs font-bold text-black uppercase">
           {slug === "privacy-policy" ? "Privacy Policy" : "Terms & Conditions"}
         </span>
-        <span className="text-xs opacity-70">
-          GET/PUT: <code>{`${API_BASE}${API_PREFIX}/policies/${slug}`}</code>
-        </span>
       </div>
 
       {/* Title / Subtitle */}
@@ -228,11 +224,6 @@ function PolicyEditor({ slug }) {
 
       {/* Save / status */}
       <div className="mt-6 flex items-center justify-between">
-        <div className="text-xs text-white/60">
-          Changes are saved via <strong>PUT</strong>{" "}
-          <code className="opacity-90">{`${API_PREFIX}/policies/${slug}`}</code>
-          .
-        </div>
         <button
           onClick={onSave}
           disabled={saving}

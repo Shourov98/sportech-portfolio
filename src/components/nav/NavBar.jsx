@@ -21,7 +21,7 @@ export default function NavBar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50">
+    <header className="sticky bg-[#262626] top-0 z-50">
       <div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8 py-3">
         <div className="flex items-center justify-between gap-3 md:gap-6">
           {/* Logo */}
