@@ -33,7 +33,7 @@ export default function AboutValuesSection({
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.6 }}
-          className="text-[#e4ff25] font-extrabold tracking-tight text-[clamp(32px,6vw,56px)]"
+          className="text-[#e4ff25] font-bold tracking-tight text-[clamp(32px,6vw,56px)]"
         >
           {title}
         </motion.h2>

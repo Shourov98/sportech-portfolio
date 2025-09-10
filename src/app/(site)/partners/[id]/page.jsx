@@ -40,7 +40,7 @@ export default function PartnerDetailPage() {
 
         <div className="relative z-10 mx-auto flex h-full max-w-6xl items-center justify-center px-4 text-center">
           <div>
-            <h1 className="text-[clamp(26px,5vw,40px)] font-extrabold tracking-tight">
+            <h1 className="text-[clamp(26px,5vw,50px)] font-bold tracking-tight">
               {p.name}
             </h1>
             {p.tagline && (
@@ -56,9 +56,15 @@ export default function PartnerDetailPage() {
       <section className="relative pt-10 sm:pt-12 lg:pt-16 pb-16 sm:pb-20 lg:pb-24">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 sm:px-6 lg:grid-cols-12 lg:px-8">
           {/* LEFT: info card */}
+          {/* LEFT: info card */}
           <aside className="lg:col-span-5">
-            <div className="overflow-hidden rounded-2xl bg-white text-[#1b1d1e] shadow ring-1 ring-black/10">
-              <div className="grid place-items-center bg-white px-6 pt-6">
+            <div
+              className="overflow-hidden rounded-2xl bg-white text-[#1b1d1e]
+                  shadow-[0_20px_60px_rgba(0,0,0,0.25)]
+                  ring-2 ring-[#EDF900]/80"
+            >
+              {/* Logo area */}
+              <div className="grid place-items-center bg-white px-6 pt-6 pb-4">
                 <Image
                   src={p.logo}
                   alt={p.name}
@@ -68,13 +74,19 @@ export default function PartnerDetailPage() {
                 />
               </div>
 
+              {/* subtle divider */}
+              <div className="mx-4 h-px bg-black/10" />
+
+              {/* Body */}
               <div className="space-y-5 px-6 pb-6 pt-4">
                 {p.website && p.website !== "#" && (
                   <a
                     href={p.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-xl bg-[#EDF900] px-5 py-2 font-semibold text-black shadow transition hover:brightness-95"
+                    className="inline-flex items-center gap-2 rounded-xl
+                     bg-[#EDF900] px-5 py-2 font-semibold text-black shadow
+                     transition hover:brightness-95"
                   >
                     Visit Website
                     <span className="inline-grid size-5 place-items-center rounded-md bg-black/85 text-white">
@@ -91,6 +103,7 @@ export default function PartnerDetailPage() {
                     </p>
                   </div>
                 )}
+
                 {p.region && (
                   <div>
                     <h4 className="font-semibold">Region</h4>
@@ -99,6 +112,7 @@ export default function PartnerDetailPage() {
                     </p>
                   </div>
                 )}
+
                 {p.language && (
                   <div>
                     <h4 className="font-semibold">Language</h4>
@@ -107,43 +121,64 @@ export default function PartnerDetailPage() {
                     </p>
                   </div>
                 )}
-
-                {(p.googlePlay || p.appStore || p.appGallery) && (
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    {p.googlePlay && (
-                      <a
-                        href={p.googlePlay}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center rounded-md bg-black/90 px-3 py-1.5 text-xs font-semibold text-white"
-                      >
-                        GET IT ON Google Play
-                      </a>
-                    )}
-                    {p.appStore && (
-                      <a
-                        href={p.appStore}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center rounded-md bg-black/90 px-3 py-1.5 text-xs font-semibold text-white"
-                      >
-                        Download App Store
-                      </a>
-                    )}
-                    {p.appGallery && (
-                      <a
-                        href={p.appGallery}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center rounded-md bg-black/90 px-3 py-1.5 text-xs font-semibold text-white"
-                      >
-                        Download AppGallery
-                      </a>
-                    )}
-                  </div>
-                )}
               </div>
             </div>
+
+            {/* Store badges BELOW the card (as in screenshot) */}
+            {(p.googlePlay || p.appStore || p.appGallery) && (
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                {p.googlePlay && (
+                  <a
+                    href={p.googlePlay}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center rounded-md bg-white px-2.5 py-1.5
+                     ring-1 ring-black/10 shadow hover:brightness-95"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/partners/googlePlay.svg"
+                      alt="Get it on Google Play"
+                      className="block h-[clamp(26px,4vw,36px)] w-auto object-contain"
+                    />
+                  </a>
+                )}
+
+                {p.appStore && (
+                  <a
+                    href={p.appStore}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center rounded-md bg-white px-2.5 py-1.5
+                     ring-1 ring-black/10 shadow hover:brightness-95"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/partners/appleStore.svg"
+                      alt="Download on the App Store"
+                      className="block h-[clamp(26px,4vw,36px)] w-auto object-contain"
+                    />
+                  </a>
+                )}
+
+                {p.appGallery && (
+                  <a
+                    href={p.appGallery}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center rounded-md bg-white px-2.5 py-1.5
+                     ring-1 ring-black/10 shadow hover:brightness-95"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/partners/appGallery.svg"
+                      alt="Download on AppGallery"
+                      className="block h-[clamp(26px,4vw,36px)] w-auto object-contain"
+                    />
+                  </a>
+                )}
+              </div>
+            )}
           </aside>
 
           {/* RIGHT: description */}

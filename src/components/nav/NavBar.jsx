@@ -25,7 +25,7 @@ export default function NavBar() {
       <div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8 py-3">
         <div className="flex items-center justify-between gap-3 md:gap-6">
           {/* Logo */}
-          <Link href="/" className="inline-flex items-center shrink-0">
+          <Link href="/" className="inline-flex px-5 items-center shrink-0">
             <Image
               src="/Logo.svg"
               alt="Sportech Logo"

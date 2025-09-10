@@ -1,5 +1,7 @@
 "use client";
 import { useId, useState } from "react";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa6";
 
 export default function PasswordField({
   label = "Password",
@@ -37,7 +39,7 @@ export default function PasswordField({
           aria-label={show ? "Hide password" : "Show password"}
           className="absolute right-3 top-1/2 -translate-y-1/2 text-black/50 hover:text-black"
         >
-          {show ? "🙈" : "👁️"}
+          {show ? <FaEyeSlash /> : <FaEye />}
         </button>
       </div>
     </div>

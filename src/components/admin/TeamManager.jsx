@@ -9,7 +9,7 @@ function Modal({ open, onClose, title, children, footer }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
       <div className="relative z-10 w-full max-w-lg rounded-2xl bg-white p-5 text-[#1b1d1e] shadow-lg">
-        <div className="flex items-center justify-between mb-3">
+        <div className="mb-3 flex items-center justify-between">
           <h3 className="text-lg font-semibold">{title}</h3>
           <button onClick={onClose} className="text-black/60 hover:text-black">
             ✕
@@ -58,10 +58,11 @@ export default function TeamManager() {
 
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
-  const [photoUrl, setPhotoUrl] = useState(""); // existing photo for preview (edit)
+  const [photoUrl, setPhotoUrl] = useState("");
   const [file, setFile] = useState(null);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
+
   const makeKey = (m, i) =>
     m.id || m._id || m.uuid || m.slug || m.email || m.createdAt || `temp-${i}`;
 
@@ -79,7 +80,9 @@ export default function TeamManager() {
         if (mounted) setLoading(false);
       }
     })();
-    return () => (mounted = false);
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   function openCreate() {
@@ -95,7 +98,7 @@ export default function TeamManager() {
 
   function openEdit(member) {
     setMode("edit");
-    setEditingId(member._id);
+    setEditingId(member._id || member.id);
     setName(member.name || "");
     setRole(member.role || "");
     setPhotoUrl(member.photo || "");
@@ -104,7 +107,6 @@ export default function TeamManager() {
     setOpen(true);
   }
 
-  // choose file handler
   function onPickFile(ev) {
     const f = ev.target.files?.[0] || null;
     setFile(f);
@@ -118,42 +120,37 @@ export default function TeamManager() {
   async function handleSave(e) {
     e.preventDefault();
     setFormError("");
-
     try {
       setSaving(true);
 
-      // need a photo when creating (no URL input anymore)
       let finalPhoto = photoUrl;
-      if (mode === "create") {
-        if (!file) {
-          setFormError("Please choose a photo.");
-          setSaving(false);
-          return;
-        }
+      if (mode === "create" && !file) {
+        setFormError("Please choose a photo.");
+        setSaving(false);
+        return;
       }
-      // upload new file if provided
       if (file instanceof File) {
         finalPhoto = await uploadToCloudinary(file);
       }
 
-      const payload = JSON.stringify({
-        name,
-        role,
-        photo: finalPhoto, // no 'order' field sent
-      });
+      const payload = JSON.stringify({ name, role, photo: finalPhoto });
 
       if (mode === "create") {
         const created = await authFetch("/team", {
           method: "POST",
           body: payload,
         });
-        setList((arr) => [...arr, created]); // backend sets order = cluster size
+        setList((arr) => [...arr, created]);
       } else {
         const updated = await authFetch(`/team/${editingId}`, {
           method: "PUT",
           body: payload,
         });
-        setList((arr) => arr.map((m) => (m.id === editingId ? updated : m)));
+        setList((arr) =>
+          arr.map((m) =>
+            m.id === editingId || m._id === editingId ? updated : m
+          )
+        );
       }
 
       setOpen(false);
@@ -164,7 +161,7 @@ export default function TeamManager() {
     }
   }
 
-  // no manual order; display as-is (server decides)
+  // server decides order; display as-is
   const members = useMemo(() => list ?? [], [list]);
 
   return (
@@ -185,35 +182,39 @@ export default function TeamManager() {
       {loading ? (
         <p className="text-white/80">Loading…</p>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        // GRID: 1 col (sm), 2 cols (md), 3 cols (lg)
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {members.map((m, i) => (
             <div
               key={makeKey(m, i)}
-              className="rounded-2xl bg-white/5 border border-white/10 p-4 flex gap-3"
+              className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-[0_12px_40px_rgba(0,0,0,0.25)]"
             >
-              <div className="relative h-16 w-16 overflow-hidden rounded-xl bg-white/10">
+              {/* Big image preview (uniform height via aspect ratio) */}
+              <div className="relative w-full aspect-[4/3] bg-white/10">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 {m.photo ? (
                   <img
                     src={m.photo}
                     alt={m.name}
-                    className="h-full w-full object-cover"
+                    className="absolute inset-0 h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="h-full w-full flex items-center justify-center text-white/50">
+                  <div className="absolute inset-0 flex items-center justify-center text-white/50 text-3xl">
                     📷
                   </div>
                 )}
               </div>
-              <div className="flex-1">
-                <div className="flex items-start justify-between">
+
+              {/* Card body */}
+              <div className="p-4">
+                <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="font-semibold text-white">{m.name}</p>
+                    <p className="text-lg font-semibold text-white">{m.name}</p>
                     <p className="text-sm text-white/70">{m.role}</p>
                   </div>
                   <button
                     onClick={() => openEdit(m)}
-                    className="rounded-lg bg-white/10 px-3 py-1 text-sm hover:bg-white/20"
+                    className="rounded-lg bg-white/10 px-3 py-1.5 text-sm hover:bg-white/20"
                   >
                     Edit
                   </button>
@@ -226,6 +227,7 @@ export default function TeamManager() {
 
       {msg && <p className="text-sm text-white/80">{msg}</p>}
 
+      {/* Modal */}
       <Modal
         open={open}
         onClose={() => setOpen(false)}
@@ -235,7 +237,7 @@ export default function TeamManager() {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="rounded-lg px-4 py-2 bg-black/5 hover:bg-black/10"
+              className="rounded-lg bg-black/5 px-4 py-2 hover:bg-black/10"
               disabled={saving}
             >
               Cancel
@@ -244,7 +246,7 @@ export default function TeamManager() {
               type="submit"
               form="team-form"
               disabled={saving}
-              className="rounded-lg px-4 py-2 bg-[#EDF900] text-black font-semibold hover:brightness-95 disabled:opacity-60"
+              className="rounded-lg bg-[#EDF900] px-4 py-2 font-semibold text-black hover:brightness-95 disabled:opacity-60"
             >
               {saving
                 ? "Saving…"
@@ -257,7 +259,7 @@ export default function TeamManager() {
       >
         <form id="team-form" onSubmit={handleSave} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Name</label>
+            <label className="mb-1 block text-sm font-medium">Name</label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -268,7 +270,7 @@ export default function TeamManager() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Role</label>
+            <label className="mb-1 block text-sm font-medium">Role</label>
             <input
               value={role}
               onChange={(e) => setRole(e.target.value)}
@@ -278,11 +280,10 @@ export default function TeamManager() {
             />
           </div>
 
-          {/* highlighted choose-photo button + preview */}
+          {/* Choose photo + bigger preview */}
           <div>
-            <label className="block text-sm font-medium mb-2">Photo</label>
-
-            <label className="inline-flex items-center gap-2 rounded-xl bg-[#EDF900] text-black font-semibold px-4 py-2 cursor-pointer hover:brightness-95">
+            <label className="mb-2 block text-sm font-medium">Photo</label>
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-[#EDF900] px-4 py-2 font-semibold text-black hover:brightness-95">
               📷 Choose photo
               <input
                 type="file"
@@ -301,7 +302,7 @@ export default function TeamManager() {
             </div>
 
             {photoUrl && (
-              <div className="mt-3 h-28 w-28 overflow-hidden rounded-xl border border-black/10">
+              <div className="mt-3 h-40 w-40 md:h-48 md:w-48 overflow-hidden rounded-xl border border-black/10">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={photoUrl}

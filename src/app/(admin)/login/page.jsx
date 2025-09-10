@@ -6,6 +6,10 @@ import AuthLayout from "@/components/auth/AuthLayout";
 import TextField from "@/components/auth/TextField";
 import PasswordField from "@/components/auth/PasswordField";
 import Image from "next/image";
+import { IoMdMail } from "react-icons/io";
+import { FaLock } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa6";
+import { FaEye } from "react-icons/fa";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -74,7 +78,7 @@ export default function LoginPage() {
             type="email"
             label="Email"
             placeholder="Enter email"
-            iconLeft={<span>✉️</span>}
+            iconLeft={<IoMdMail className="text-[#262626]" />}
             required
           />
           <div>
@@ -82,7 +86,7 @@ export default function LoginPage() {
               name="password"
               label="Password"
               placeholder="Enter password"
-              iconLeft={<span>🔒</span>}
+              iconLeft={<FaLock className="text-[#262626]" />}
               required
             />
             <div className="mt-2 text-right text-sm">

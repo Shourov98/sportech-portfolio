@@ -123,23 +123,31 @@ export default function FaqManager() {
       {loading ? (
         <p className="text-white/80">Loading…</p>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {list.map((f, i) => (
             <div
               key={makeKey(f, i)}
-              className="rounded-2xl bg-white/5 border border-white/10 p-4"
+              className="group overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-[0_12px_40px_rgba(0,0,0,0.25)]"
             >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="font-semibold text-white">{f.question}</p>
-                  <p className="text-white/80 mt-1">{f.answer}</p>
+              <div className="flex h-full flex-col p-4">
+                <h4 className="text-white font-semibold text-base">
+                  {f.question}
+                </h4>
+
+                {/* show a short preview, not the whole description */}
+                <p className="mt-2 text-sm text-white/80 line-clamp-3">
+                  {f.answer}
+                </p>
+
+                {/* actions pinned to bottom for consistent card height */}
+                <div className="mt-auto pt-4 flex justify-end">
+                  <button
+                    onClick={() => openEdit(f)}
+                    className="rounded-lg bg-white/10 px-3 py-1.5 text-sm hover:bg-white/20"
+                  >
+                    Edit
+                  </button>
                 </div>
-                <button
-                  onClick={() => openEdit(f)}
-                  className="rounded-lg bg-white/10 px-3 py-1 text-sm hover:bg-white/20"
-                >
-                  Edit
-                </button>
               </div>
             </div>
           ))}

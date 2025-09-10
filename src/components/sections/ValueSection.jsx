@@ -63,7 +63,7 @@ export default function ValuesSection() {
           variants={leftIn}
           className="max-w-[60ch] transform-gpu will-change-transform text-left"
         >
-          <h3 className="text-[clamp(18px,2.6vw,28px)] font-bold">
+          <h3 className="text-[clamp(18px,2.6vw,28px)] text-white font-bold">
             Innovation
           </h3>
           <p className="mt-3 text-white/85 leading-7 text-[clamp(14px,2.2vw,18px)]">
@@ -91,7 +91,7 @@ export default function ValuesSection() {
           variants={rightIn}
           className="max-w-[60ch] transform-gpu will-change-transform ml-auto text-right"
         >
-          <h3 className="text-[clamp(18px,2.6vw,28px)] text-align-left font-bold">
+          <h3 className="text-[clamp(18px,2.6vw,28px)] text-white text-align-left font-bold">
             Transparency
           </h3>
           <p className="mt-3 text-white/85 text-align-left leading-7 text-[clamp(14px,2.2vw,18px)]">

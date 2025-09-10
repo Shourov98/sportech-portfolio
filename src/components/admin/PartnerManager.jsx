@@ -121,8 +121,8 @@ export default function PartnerManager() {
   return (
     <section className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">Our Partners</h2>
-        <p className="text-white/70">
+        <h2 className="text-2xl font-bold text-[#EDF900]">Our Partners</h2>
+        <p className="text-white">
           View details. You can edit all fields except{" "}
           <span className="font-semibold">Name</span> and{" "}
           <span className="font-semibold">Logo</span>.
@@ -132,98 +132,119 @@ export default function PartnerManager() {
       {loading ? (
         <p className="text-white/80">Loading…</p>
       ) : (
-        <div className="space-y-4">
-          {list.map((p, i) => (
-            <div
-              key={makeKey(p, i)}
-              className="rounded-2xl bg-white/5 border border-white/10 p-4"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3">
-                    {/* logo preview (read-only) */}
-                    <div className="h-10 w-10 overflow-hidden rounded bg-white/10 shrink-0">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      {p.logo ? (
-                        <img
-                          src={p.logo}
-                          alt={p.name}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="h-full w-full flex items-center justify-center text-white/50">
-                          🏢
-                        </div>
-                      )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {list.map((p, i) => {
+            const gPlay = p.googlePlay ?? p.google_play;
+            const appGal = p.appGallery ?? p.app_gallery;
+
+            return (
+              <div
+                key={makeKey(p, i)}
+                className="group overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-[0_12px_40px_rgba(0,0,0,0.25)]"
+              >
+                {/* Large logo / cover area */}
+                <div className="relative w-full aspect-[4/3] bg-white/10">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  {p.logo ? (
+                    <img
+                      src={p.logo}
+                      alt={p.name}
+                      className="absolute inset-0 h-full w-full object-contain object-center"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 grid place-items-center text-3xl text-white/50">
+                      🏢
                     </div>
-                    <h3 className="text-lg font-semibold text-white">
+                  )}
+                </div>
+
+                {/* Body */}
+                <div className="p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="min-w-0 truncate text-lg font-semibold text-[#EDF900]">
                       {p.name}
                     </h3>
+
+                    {/* EDIT button — top-right */}
+                    <button
+                      onClick={() => openEdit(p)}
+                      className="shrink-0 rounded-lg bg-white/10 px-3 py-1.5 text-sm text-[#EDF900] hover:bg-white/20"
+                    >
+                      Edit
+                    </button>
                   </div>
 
                   {(p.short_description ?? p.shortDesc) && (
-                    <>
-                      <p className="mt-3 text-sm uppercase tracking-wide text-white/60">
+                    <div className="mt-4">
+                      <p className="text-md font-bold uppercase tracking-wide text-[#EDF900]">
                         Short description
                       </p>
-                      <p className="text-white">
+                      <p className="mt-1 text-white">
                         {p.short_description ?? p.shortDesc}
                       </p>
-                    </>
+                    </div>
                   )}
 
                   {p.description && (
-                    <>
-                      <p className="mt-3 text-sm uppercase tracking-wide text-white/60">
+                    <div className="mt-4">
+                      <p className="text-md font-bold uppercase tracking-wide text-[#EDF900]">
                         Description
                       </p>
-                      <p className="text-white/90 whitespace-pre-line">
+                      <p className="mt-1 whitespace-pre-line text-white/90">
                         {p.description}
                       </p>
-                    </>
+                    </div>
                   )}
 
-                  {(p.website ||
-                    p.googlePlay ||
-                    p.appGallery ||
-                    p.google_play ||
-                    p.app_gallery) && (
-                    <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                  {(p.website || gPlay || appGal) && (
+                    <div className="mt-4 grid gap-3 sm:grid-cols-3">
                       {p.website && (
                         <div>
-                          <p className="text-xs text-white/60">Website</p>
-                          <p className="text-white break-all">{p.website}</p>
+                          <p className="text-xs text-[#EDF900]">Website</p>
+                          <a
+                            href={p.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-1 block break-words text-white underline decoration-white/30 underline-offset-2 hover:decoration-white"
+                          >
+                            {p.website}
+                          </a>
                         </div>
                       )}
-                      {(p.googlePlay || p.google_play) && (
+
+                      {gPlay && (
                         <div>
-                          <p className="text-xs text-white/60">Google Play</p>
-                          <p className="text-white break-all">
-                            {p.googlePlay ?? p.google_play}
-                          </p>
+                          <p className="text-xs text-[#EDF900]">Google Play</p>
+                          <a
+                            href={gPlay}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-1 block break-words text-white underline decoration-white/30 underline-offset-2 hover:decoration-white"
+                          >
+                            {gPlay}
+                          </a>
                         </div>
                       )}
-                      {(p.appGallery || p.app_gallery) && (
+
+                      {appGal && (
                         <div>
-                          <p className="text-xs text-white/60">AppGallery</p>
-                          <p className="text-white break-all">
-                            {p.appGallery ?? p.app_gallery}
-                          </p>
+                          <p className="text-xs text-[#EDF900]">AppGallery</p>
+                          <a
+                            href={appGal}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-1 block break-words text-white underline decoration-white/30 underline-offset-2 hover:decoration-white"
+                          >
+                            {appGal}
+                          </a>
                         </div>
                       )}
                     </div>
                   )}
                 </div>
-
-                <button
-                  onClick={() => openEdit(p)}
-                  className="h-9 rounded-lg bg-white/10 px-3 text-sm text-white hover:bg-white/20"
-                >
-                  Edit
-                </button>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

@@ -128,54 +128,76 @@ export default function ServiceManager() {
       {loading ? (
         <p className="text-white/80">Loading…</p>
       ) : (
-        <div className="space-y-4">
-          {list.map((s, i) => (
-            <div
-              key={keyOf(s, i)}
-              className="rounded-2xl bg-white/5 border border-white/10 p-4"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  <p className="text-sm uppercase tracking-wide text-white/60">
-                    Title
-                  </p>
-                  <h3 className="text-lg font-semibold text-white">
-                    {s.title}
-                  </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {list.map((s, i) => {
+            const cover =
+              s.banner_image ??
+              s.bannerImage ??
+              s.right_image ??
+              s.rightImage ??
+              null;
 
-                  {s.subtitle && (
-                    <>
-                      <p className="mt-3 text-sm uppercase tracking-wide text-white/60">
-                        Subtitle
-                      </p>
-                      <p className="text-white">{s.subtitle}</p>
-                    </>
-                  )}
-
-                  <p className="mt-3 text-sm uppercase tracking-wide text-white/60">
-                    Short description
-                  </p>
-                  <p className="text-white">
-                    {s.short_description ?? s.shortDesc ?? ""}
-                  </p>
-
-                  <p className="mt-3 text-sm uppercase tracking-wide text-white/60">
-                    Description
-                  </p>
-                  <p className="text-white/90 whitespace-pre-line">
-                    {s.description ?? ""}
-                  </p>
+            return (
+              <div
+                key={keyOf(s, i)}
+                className="group overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-[0_12px_40px_rgba(0,0,0,0.25)]"
+              >
+                {/* Smaller/capped cover so it doesn't look huge */}
+                <div className="relative w-full aspect-[4/3] max-h-48 bg-white/10">
+                  {/* always SVG: center both axes, no cropping */}
+                  <img
+                    src={cover}
+                    alt={s.title}
+                    className="absolute inset-0 h-full w-full object-contain object-center"
+                  />
                 </div>
 
-                <button
-                  onClick={() => openEdit(s)}
-                  className="h-9 rounded-lg bg-white/10 px-3 text-sm text-white hover:bg-white/20"
-                >
-                  Edit
-                </button>
+                {/* Body */}
+                <div className="p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="truncate text-lg font-semibold text-[#EDF900]">
+                        {s.title}
+                      </h3>
+                      {s.subtitle && (
+                        <p className="mt-1 line-clamp-1 text-sm text-white/70">
+                          {s.subtitle}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* EDIT button — clearly visible top-right */}
+                    <button
+                      onClick={() => openEdit(s)}
+                      className="shrink-0 rounded-lg bg-white/10 px-3 py-1.5 text-sm text-white hover:bg-white/20"
+                    >
+                      Edit
+                    </button>
+                  </div>
+
+                  {/* Short description (bold + clamped) */}
+                  <div className="mt-4">
+                    <p className="text-md font-bold uppercase tracking-wide text-[#EDF900]">
+                      Short description
+                    </p>
+                    <p className="mt-1 text-white/90 line-clamp-3">
+                      {s.short_description ?? s.shortDesc ?? ""}
+                    </p>
+                  </div>
+
+                  {/* Description (bold + clamped) */}
+                  <div className="mt-4">
+                    <p className="text-md font-bold uppercase tracking-wide text-[#EDF900]">
+                      Description
+                    </p>
+                    <p className="mt-1 text-white/90 line-clamp-5 whitespace-pre-line">
+                      {s.description ?? ""}
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

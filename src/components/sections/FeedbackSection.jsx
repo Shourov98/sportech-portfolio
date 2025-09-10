@@ -59,7 +59,7 @@ export default function FeedbackSection({
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.7 }}
-          className="text-center text-[clamp(28px,6vw,56px)] font-extrabold leading-tight text-[#EDF900]"
+          className="text-center text-[clamp(28px,6vw,56px)] font-bold leading-tight text-[#EDF900]"
         >
           {title}
         </motion.h2>

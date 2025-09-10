@@ -76,7 +76,7 @@ export default function FAQSection() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.6 }}
-            className="font-extrabold tracking-tight text-[#EDF900] text-[clamp(28px,6vw,48px)]"
+            className="font-bold tracking-tight text-[#EDF900] text-[clamp(28px,6vw,48px)]"
           >
             Frequently Asked Questions ?
           </motion.h2>

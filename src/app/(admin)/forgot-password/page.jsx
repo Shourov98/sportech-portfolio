@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import AuthLayout from "@/components/auth/AuthLayout";
 import TextField from "@/components/auth/TextField";
 import { apiFetch } from "@/utils/api";
+import { IoMdMail } from "react-icons/io";
 
 export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false);
@@ -62,7 +63,7 @@ export default function ForgotPasswordPage() {
             type="email"
             label="Email"
             placeholder="Enter email"
-            iconLeft={<span>✉️</span>}
+            iconLeft={<IoMdMail className="text-[#262626]" />}
             required
           />
         </div>

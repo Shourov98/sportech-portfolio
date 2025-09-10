@@ -45,7 +45,7 @@ export default function TeamSection() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Heading */}
         <div className="text-center">
-          <h2 className="text-[clamp(28px,5vw,44px)] font-extrabold text-[#EDF900] tracking-tight">
+          <h2 className="text-[clamp(28px,5vw,44px)] font-bold text-[#EDF900] tracking-tight">
             Our Professional Team
           </h2>
           <p className="mx-auto mt-3 max-w-3xl text-sm sm:text-base text-white/80">
@@ -71,36 +71,38 @@ export default function TeamSection() {
                 variants={item}
                 className="w-[min(90vw,320px)] sm:w-[300px]"
               >
-                <figure className="group relative overflow-hidden rounded-2xl ring-1 ring-white/10 bg-black/10">
+                <figure className="group relative overflow-hidden">
                   {/* Image */}
-                  <div className="relative aspect-[4/3] w-full">
+                  <div className="relative w-full h-[320px] sm:h-[360px] lg:h-[420px] bg-black/10">
                     <Image
                       src={m.src}
                       alt={m.name}
                       fill
                       sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
-                      className="object-cover transition duration-500 group-hover:scale-[1.04]"
+                      className="object-contain transition duration-300"
                       priority={false}
                       onError={(e) => {
                         // graceful fallback if remote image fails
+                        // @ts-ignore - next/image forwards to underlying <img>
                         e.currentTarget.src = "/team/placeholder.png";
                       }}
                     />
-                  </div>
-
-                  {/* Glass overlay on hover */}
-                  <figcaption className="pointer-events-none absolute inset-0 grid place-items-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <div className="mx-6 w-full max-w-xs rounded-2xl bg-white/10 backdrop-blur-md ring-1 ring-white/20 shadow-[0_20px_60px_rgba(0,0,0,.45)] px-6 py-5 text-center">
-                      <div className="text-white font-bold text-lg">
-                        {m.name}
+                    {/* Glass overlay + text on hover */}
+                    <figcaption className="pointer-events-none absolute inset-0 grid place-items-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      {/* glass layer */}
+                      <div className="absolute inset-0 bg-white/10 supports-[backdrop-filter]:bg-white/15 backdrop-blur-md" />
+                      {/* text block */}
+                      <div className="relative mx-6 max-w-xs text-center">
+                        <div className="text-white font-bold text-lg">
+                          {m.name}
+                        </div>
+                        <div className="mt-2 h-px w-24 mx-auto bg-white/80" />
+                        <div className="mt-2 text-white/90 text-sm">
+                          {m.role}
+                        </div>
                       </div>
-                      <div className="mt-2 h-px w-24 mx-auto bg-white/80" />
-                      <div className="mt-2 text-white/90 text-sm">{m.role}</div>
-                    </div>
-                  </figcaption>
-
-                  {/* Subtle neon edge on hover */}
-                  <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-transparent group-hover:ring-[#b7a6ff]/60 transition" />
+                    </figcaption>
+                  </div>
                 </figure>
               </motion.li>
             ))

@@ -37,7 +37,7 @@ export default function ObjectivesSection({
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.5 }}
-            className="font-extrabold text-[#EDF900] tracking-tight text-[clamp(32px,6vw,64px)]"
+            className="font-bold text-[#EDF900] tracking-tight text-[clamp(32px,6vw,64px)]"
           >
             {title}
           </motion.h2>
