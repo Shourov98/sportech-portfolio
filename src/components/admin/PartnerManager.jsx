@@ -1,3 +1,4 @@
+// src/app/(admin)/PartnerManager.jsx
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { authFetch } from "@/utils/api";
@@ -12,7 +13,7 @@ function Modal({ open, onClose, title, children, footer }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
       <div className="relative z-10 w-full max-w-2xl rounded-2xl bg-white p-5 text-[#1b1d1e] shadow-lg">
-        <div className="flex items-center justify-between mb-3">
+        <div className="mb-3 flex items-center justify-between">
           <h3 className="text-lg font-semibold">{title}</h3>
           <button onClick={onClose} className="text-black/60 hover:text-black">
             ✕
@@ -39,6 +40,11 @@ export default function PartnerManager() {
   const [website, setWebsite] = useState("");
   const [googlePlay, setGooglePlay] = useState("");
   const [appGallery, setAppGallery] = useState("");
+  // NEW fields
+  const [specialization, setSpecialization] = useState("");
+  const [region, setRegion] = useState("");
+  const [language, setLanguage] = useState("");
+
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
 
@@ -64,19 +70,27 @@ export default function PartnerManager() {
     setWebsite(row.website ?? "");
     setGooglePlay(row.googlePlay ?? row.google_play ?? "");
     setAppGallery(row.appGallery ?? row.app_gallery ?? "");
+    // NEW fields
+    setSpecialization(row.specialization ?? "");
+    setRegion(row.region ?? "");
+    setLanguage(row.language ?? "");
     setFormError("");
     setOpen(true);
   }
 
-  // Build PUT payload in snake_case as per your API
+  // Build PUT payload (keep existing keys as you had them; add new ones)
   function buildPayload(original) {
     return JSON.stringify({
       name: original.name ?? "", // read-only, but send back unchanged
       short_description: shortDesc ?? "",
       description: description ?? "",
       website: website ?? "",
-      googlePlay: googlePlay ?? "", // PUT schema screenshot shows camel here
-      appGallery: appGallery ?? "", // (keeping as the docs show for PUT)
+      googlePlay: googlePlay ?? "", // keeping the camelCase you already use
+      appGallery: appGallery ?? "", // same
+      // NEW fields (strings)
+      specialization: specialization ?? "",
+      region: region ?? "",
+      language: language ?? "",
       logo: original.logo ?? "", // read-only, keep unchanged
     });
   }
@@ -101,6 +115,10 @@ export default function PartnerManager() {
         shortDesc: p.short_description ?? p.shortDesc,
         googlePlay: p.googlePlay ?? p.google_play,
         appGallery: p.appGallery ?? p.app_gallery,
+        // NEW fields pass through as-is
+        specialization: p.specialization,
+        region: p.region,
+        language: p.language,
       });
 
       setRows((arr) =>
@@ -132,7 +150,7 @@ export default function PartnerManager() {
       {loading ? (
         <p className="text-white/80">Loading…</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {list.map((p, i) => {
             const gPlay = p.googlePlay ?? p.google_play;
             const appGal = p.appGallery ?? p.app_gallery;
@@ -193,6 +211,38 @@ export default function PartnerManager() {
                       <p className="mt-1 whitespace-pre-line text-white/90">
                         {p.description}
                       </p>
+                    </div>
+                  )}
+
+                  {/* NEW: Specialization / Region / Language */}
+                  {(p.specialization || p.region || p.language) && (
+                    <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                      {p.specialization && (
+                        <div>
+                          <p className="text-xs text-[#EDF900]">
+                            Specialization
+                          </p>
+                          <p className="mt-1 break-words text-white">
+                            {p.specialization}
+                          </p>
+                        </div>
+                      )}
+                      {p.region && (
+                        <div>
+                          <p className="text-xs text-[#EDF900]">Region</p>
+                          <p className="mt-1 break-words text-white">
+                            {p.region}
+                          </p>
+                        </div>
+                      )}
+                      {p.language && (
+                        <div>
+                          <p className="text-xs text-[#EDF900]">Language</p>
+                          <p className="mt-1 break-words text-white">
+                            {p.language}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -260,7 +310,7 @@ export default function PartnerManager() {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="rounded-lg px-4 py-2 bg-black/5 hover:bg-black/10"
+              className="rounded-lg bg-black/5 px-4 py-2 hover:bg-black/10"
               disabled={saving}
             >
               Cancel
@@ -269,7 +319,7 @@ export default function PartnerManager() {
               type="submit"
               form="partner-form"
               disabled={saving}
-              className="rounded-lg px-4 py-2 bg-[#EDF900] text-black font-semibold hover:brightness-95 disabled:opacity-60"
+              className="rounded-lg bg-[#EDF900] px-4 py-2 font-semibold text-black hover:brightness-95 disabled:opacity-60"
             >
               {saving ? "Saving…" : "Save changes"}
             </button>
@@ -280,19 +330,19 @@ export default function PartnerManager() {
           {/* read-only */}
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium mb-1">Name</label>
+              <label className="mb-1 block text-sm font-medium">Name</label>
               <input
                 value={current?.name ?? ""}
                 readOnly
-                className="w-full rounded border border-black/10 px-3 py-2 bg-black/5"
+                className="w-full rounded border border-black/10 bg-black/5 px-3 py-2"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Logo</label>
+              <label className="mb-1 block text-sm font-medium">Logo</label>
               <input
                 value={current?.logo ?? ""}
                 readOnly
-                className="w-full rounded border border-black/10 px-3 py-2 bg-black/5"
+                className="w-full rounded border border-black/10 bg-black/5 px-3 py-2"
               />
               {current?.logo && (
                 <div className="mt-2 h-12 w-12 overflow-hidden rounded border border-black/10">
@@ -309,7 +359,7 @@ export default function PartnerManager() {
 
           {/* editable */}
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="mb-1 block text-sm font-medium">
               Short description
             </label>
             <input
@@ -321,7 +371,7 @@ export default function PartnerManager() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="mb-1 block text-sm font-medium">
               Description
             </label>
             <textarea
@@ -333,9 +383,43 @@ export default function PartnerManager() {
             />
           </div>
 
+          {/* NEW: specialization / region / language */}
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="md:col-span-3">
+              <label className="mb-1 block text-sm font-medium">
+                Specialization
+              </label>
+              <textarea
+                rows={3}
+                value={specialization}
+                onChange={(e) => setSpecialization(e.target.value)}
+                className="w-full rounded border border-black/10 px-3 py-2"
+                placeholder="e.g., Designing and developing immersive games for multiple platforms."
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium">Region</label>
+              <input
+                value={region}
+                onChange={(e) => setRegion(e.target.value)}
+                className="w-full rounded border border-black/10 px-3 py-2"
+                placeholder="e.g., Latin America"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium">Language</label>
+              <input
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="w-full rounded border border-black/10 px-3 py-2"
+                placeholder="e.g., English"
+              />
+            </div>
+          </div>
+
           <div className="grid gap-4 md:grid-cols-3">
             <div className="md:col-span-1">
-              <label className="block text-sm font-medium mb-1">Website</label>
+              <label className="mb-1 block text-sm font-medium">Website</label>
               <input
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
@@ -344,7 +428,7 @@ export default function PartnerManager() {
               />
             </div>
             <div className="md:col-span-1">
-              <label className="block text-sm font-medium mb-1">
+              <label className="mb-1 block text-sm font-medium">
                 Google Play
               </label>
               <input
@@ -355,7 +439,7 @@ export default function PartnerManager() {
               />
             </div>
             <div className="md:col-span-1">
-              <label className="block text-sm font-medium mb-1">
+              <label className="mb-1 block text-sm font-medium">
                 AppGallery
               </label>
               <input
