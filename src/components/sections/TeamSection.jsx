@@ -49,8 +49,11 @@ export default function TeamSection() {
             Our Professional Team
           </h2>
           <p className="mx-auto mt-3 max-w-3xl text-sm sm:text-base text-white/80">
-            A diverse group of builders, strategists, and creators dedicated to
-            delivering world-class digital sports solutions.
+            Our team is a blend of creative thinkers, strategic planners, and
+            technology innovators who share one goal — to revolutionize the
+            sports industry. With diverse expertise and a shared passion for
+            excellence, we work together to deliver world-class digital
+            solutions.
           </p>
         </div>
 

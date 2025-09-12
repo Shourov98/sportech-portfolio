@@ -1,6 +1,7 @@
+// app/verify-otp/VerifyOtpContent.jsx
 "use client";
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,6 +13,17 @@ export default function VerifyOtpContent() {
   const params = useSearchParams();
   const router = useRouter();
   const email = params.get("email") || "";
+
+  // Persist the email so the reset page (and refreshes) can read it
+  useEffect(() => {
+    if (email && typeof window !== "undefined") {
+      try {
+        sessionStorage.setItem("resetEmail", email);
+      } catch {
+        /* ignore storage errors */
+      }
+    }
+  }, [email]);
 
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
@@ -31,10 +43,17 @@ export default function VerifyOtpContent() {
       setLoading(true);
       const { resetToken } = await apiFetch("/auth/verify-otp", {
         method: "POST",
-        body: JSON.stringify({ email, otp: String(code) }),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ email, otp: String(code).trim() }),
       });
 
-      if (resetToken) sessionStorage.setItem("resetToken", resetToken);
+      if (typeof window !== "undefined") {
+        if (resetToken) sessionStorage.setItem("resetToken", resetToken);
+        sessionStorage.setItem("resetEmail", email);
+      }
 
       router.push(
         `/reset-password?email=${encodeURIComponent(
@@ -55,6 +74,10 @@ export default function VerifyOtpContent() {
       setInfo("");
       await apiFetch("/auth/forgot-password", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify({ email }),
       });
       setInfo("OTP resent to your email.");
@@ -86,8 +109,8 @@ export default function VerifyOtpContent() {
         <h1 className="text-2xl font-bold">Verify Code</h1>
         <p className="mt-1 text-sm text-white/70">
           We sent an OTP code to your email{" "}
-          <span className="text-white">{email}</span>. Enter the code below to
-          verify.
+          <span className="text-white break-all">{email}</span>. Enter the code
+          below to verify.
         </p>
 
         <div className="mt-8 flex justify-center">

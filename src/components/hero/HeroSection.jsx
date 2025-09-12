@@ -7,9 +7,7 @@ import AnimatedSwapButton from "../AnimatedSwapButton";
 
 const container = {
   hidden: {},
-  show: {
-    transition: { staggerChildren: 0.22, delayChildren: 0.18 },
-  },
+  show: { transition: { staggerChildren: 0.22, delayChildren: 0.18 } },
 };
 
 const item = {
@@ -30,9 +28,9 @@ const item = {
 
 export default function HeroSection() {
   return (
-    <div className="relative isolate overflow-hidden">
-      {/* Full-bleed background */}
-      <div className="pointer-events-none min-h-screen absolute inset-0 -z-10">
+    <div className="relative isolate">
+      {/* Full-bleed background (no globe here) */}
+      <div className="pointer-events-none absolute inset-0 -z-10 min-h-screen">
         <Image
           src="/home/homeHeroSection.svg"
           alt="Hero background"
@@ -40,18 +38,11 @@ export default function HeroSection() {
           priority
           className="object-cover"
         />
-        {/* Globe */}
-        <div
-          className="pointer-events-auto absolute z-0 left-1/2 top-[481px] w-[509px] h-[509px] max-w-full -translate-x-1/2"
-          aria-hidden="true"
-        >
-          <Earth3D />
-        </div>
       </div>
 
       <section className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-28 md:pt-36">
         <div className="grid grid-cols-1 gap-10">
-          {/* Left copy with staggered enter-from-left */}
+          {/* Left copy */}
           <motion.div
             variants={container}
             initial="hidden"
@@ -82,13 +73,27 @@ export default function HeroSection() {
               className="mt-8 flex items-center gap-4"
             >
               <AnimatedSwapButton href="/service">
-                Services & Solutions
+                Services &amp; Solutions
               </AnimatedSwapButton>
             </motion.div>
           </motion.div>
 
-          {/* Right visual spacer (kept) */}
-          <div className="relative min-h-[320px] lg:min-h-[520px]" />
+          {/* Globe BELOW the text, centered and responsive */}
+          <div className="relative mx-auto w-[320px] h-[320px] sm:h-[420px] md:w-[540px] md:h-[540px] lg:w-[680px] lg:h-[680px]">
+            {/* Keep it above the bg and not clipped */}
+            {/* Globe BELOW the text, centered and responsive */}
+            <div
+              className="
+                relative mx-auto z-20 overflow-visible
+                w-[82vw] h-[82vw]              /* phones: big, fully visible */
+                sm:w-[420px] sm:h-[420px]
+                md:w-[560px] md:h-[560px]
+                lg:w-[800px] lg:h-[800px]      /* bigger on large screens */
+              "
+            >
+              <Earth3D />
+            </div>
+          </div>
         </div>
       </section>
     </div>

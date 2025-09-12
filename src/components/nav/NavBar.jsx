@@ -23,7 +23,7 @@ export default function NavBar() {
   return (
     <header className="sticky bg-[#262626] top-0 z-50">
       <div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8 py-3">
-        <div className="flex items-center justify-between gap-3 md:gap-6">
+        <div className="flex items-center justify-between gap-3 md:gap-6 lg:gap-10">
           {/* Logo */}
           <Link href="/" className="inline-flex px-5 items-center shrink-0">
             <Image
@@ -32,7 +32,7 @@ export default function NavBar() {
               width={196}
               height={30}
               priority
-              className="md:h-[30px] md:w-[196px] w-[90px] h-[15px]"
+              className="md:h-[30px] md:w-[196px] w-[90px] h-[18px]"
             />
           </Link>
 
@@ -41,12 +41,12 @@ export default function NavBar() {
             className="
               hidden md:block
               ml-2 md:ml-6
-              rounded-full border border-white/10 backdrop-blur-xl
+              rounded-full border border-white/60 backdrop-blur-xl
               px-3 md:px-4 lg:px-5 py-2
               shadow-[0_8px_30px_rgba(0,0,0,0.25)]
             "
           >
-            <ul className="flex flex-nowrap items-center gap-3 md:gap-4 lg:gap-7 text-[14px] md:text-[15px] lg:text-[17px] text-white/85">
+            <ul className="flex flex-nowrap items-center min-gap-3 md:gap-4 lg:gap-7 text-[14px] md:text-[15px] lg:text-[20px] text-white/75">
               {links.map((i) => {
                 const active = pathname === i.href;
                 return (
@@ -54,7 +54,7 @@ export default function NavBar() {
                     <Link
                       href={i.href}
                       className={`inline-flex items-center gap-2 rounded-full
-                        px-2.5 md:px-3.5 lg:px-6 py-1 hover:text-white whitespace-nowrap
+                        px-2.5 md:px-3.5 lg:px-6 py-1 hover:text-white
                         ${active ? "text-white font-semibold" : ""}
                       `}
                     >
@@ -72,15 +72,11 @@ export default function NavBar() {
           {/* Mobile menu button */}
           <button
             onClick={() => setOpen((s) => !s)}
-            className="md:hidden inline-flex items-center justify-center rounded-xl border border-white/15 bg-[#262626] p-1.5 backdrop-blur-sm"
+            className="md:hidden inline-flex items-center justify-center bg-[#262626]"
             aria-label="Toggle menu"
             aria-expanded={open}
           >
-            <div className="h-3.5 w-3.5">
-              <span className="block h-[1.5px] w-full bg-white"></span>
-              <span className="mt-1 block h-[1.5px] w-full bg-white"></span>
-              <span className="mt-1 block h-[1.5px] w-full bg-white"></span>
-            </div>
+            <img src="/Manu.svg" className="w-6 h-6" alt="mobile-menu" />
           </button>
         </div>
 

@@ -57,7 +57,13 @@ export default function ValuesSection() {
       </motion.h2>
 
       {/* Parent container: single column */}
-      <motion.div className="w-7/10 justify-center items-center flex flex-col gap-10">
+      <motion.div
+        className="mx-auto w-full max-w-8/10 flex flex-col items-stretch gap-5"
+        variants={container}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.5 }}
+      >
         {/* Innovation — left aligned */}
         <motion.div
           variants={leftIn}

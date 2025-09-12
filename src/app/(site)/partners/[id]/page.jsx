@@ -167,7 +167,7 @@ export default function PartnerDetailPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center rounded-md bg-white px-2.5 py-1.5
-                     ring-1 ring-black/10 shadow hover:brightness-95"
+                    ring-1 ring-black/10 shadow hover:brightness-95"
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -183,7 +183,7 @@ export default function PartnerDetailPage() {
 
           {/* RIGHT: description */}
           <div className="lg:col-span-7">
-            <h2 className="mb-4 text-[clamp(18px,3vw,24px)] font-extrabold">
+            <h2 className="mb-4 text-[clamp(18px,3vw,24px)] text-center font-extrabold">
               About Partner
             </h2>
 

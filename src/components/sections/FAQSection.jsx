@@ -69,29 +69,40 @@ export default function FAQSection() {
   return (
     <section id="faq" className="relative bg-[#262626] py-8 md:py-10 lg:py-12">
       <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
-        {/* Title + tilted capsule */}
+        {/* Title (capsule locked to last character) */}
         <div className="relative mx-auto mb-8 text-center sm:mb-10">
           <motion.h2
             variants={topIn}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.6 }}
-            className="font-bold tracking-tight text-[#EDF900] text-[clamp(28px,6vw,48px)]"
+            className="font-bold tracking-tight text-[#EDF900] text-[clamp(28px,6vw,48px)] leading-[1.1] inline-block"
           >
-            Frequently Asked Questions ?
+            {/* Everything except the last character */}
+            <span>Frequently Asked Questions</span>
+            {/* Wrap the last character to anchor the capsule */}
+            <span className="relative inline-block align-top">
+              ?
+              <motion.span
+                variants={topIn}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.6 }}
+                transition={{ ...SPRING, delay: 0.08 }}
+                className="
+          absolute left-full top-0
+          -translate-y-[60%] translate-x-[8px]
+          select-none rounded-full bg-gray-100 px-3 py-1
+          text-[14px] text-[#262626]
+          shadow-[0_8px_30px_rgba(0,0,0,0.25)]
+          rotate-[15deg]
+        "
+                aria-hidden="true"
+              >
+                FAQ
+              </motion.span>
+            </span>
           </motion.h2>
-
-          <motion.span
-            variants={topIn}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.6 }}
-            transition={{ ...SPRING, delay: 0.08 }}
-            className="absolute right-1/2 translate-x-[210px] -top-4 select-none rounded-full bg-[#EDF900] px-3 py-1 text-[12px] font-semibold text-[#1b1d1e] shadow-[0_8px_30px_rgba(0,0,0,0.25)] rotate-[15deg] sm:right-[8%] sm:translate-x-0"
-            aria-hidden="true"
-          >
-            FAQ
-          </motion.span>
         </div>
 
         {/* Accordion */}
@@ -129,8 +140,8 @@ export default function FAQSection() {
                     className={[
                       "grid size-9 place-items-center rounded-full border transition",
                       isOpen
-                        ? "border-[#262626] bg-white/60"
-                        : "border-white/80 bg-white/60",
+                        ? "border-[#262626] bg-white/80"
+                        : "border-white/60 bg-white/80",
                     ].join(" ")}
                     aria-hidden="true"
                   >
@@ -139,7 +150,7 @@ export default function FAQSection() {
                       height="20"
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="#EDF900"
+                      stroke="#262626"
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"

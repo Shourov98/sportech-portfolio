@@ -243,7 +243,7 @@ export default function PartnersPage() {
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, amount: 0.8 }}
-                className="text-center text-[clamp(28px,5.2vw,44px)] font-extrabold tracking-tight text-[#EDF900]"
+                className="text-center text-[clamp(34px,7vw,64px)] font-extrabold tracking-tight text-[#EDF900]"
               >
                 Partner Directory
               </motion.h1>
@@ -253,7 +253,7 @@ export default function PartnersPage() {
                 whileInView="show"
                 viewport={{ once: true, amount: 0.8 }}
                 transition={{ ...SPRING, delay: 0.08 }}
-                className="mx-auto mt-3 max-w-3xl text-center text-[clamp(14px,2.6vw,16px)] leading-7 text-white/90"
+                className="mx-auto mt-3 max-w-3xl text-center text-[clamp(18px,2.6vw,20px)] leading-7 text-white/80"
               >
                 We work alongside trusted partners who share our passion for
                 innovation, quality, and excellence in sports. Together, we

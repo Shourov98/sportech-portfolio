@@ -1,4 +1,3 @@
-// src/app/(site)/service/[id]/page.jsx
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { services } from "@/data/services";
@@ -48,13 +47,13 @@ export default function ServicePage({ params }) {
               <div className="relative skew-x-[-25deg]">
                 <div
                   className="
-              relative
-              bg-white/10 supports-[backdrop-filter]:bg-white/15
-              backdrop-blur-xl backdrop-saturate-150
-              ring-1 ring-white/15 shadow-[0_8px_30px_rgba(0,0,0,0.35)]
-              pl-5 pr-12 sm:pl-6 sm:pr-20 md:pl-8 md:pr-28
-              py-2.5 sm:py-3.5 md:py-4
-            "
+                    relative
+                    bg-white/10 supports-[backdrop-filter]:bg-white/15
+                    backdrop-blur-xl backdrop-saturate-150
+                    ring-1 ring-white/15 shadow-[0_8px_30px_rgba(0,0,0,0.35)]
+                    pl-5 pr-12 sm:pl-6 sm:pr-20 md:pl-8 md:pr-28
+                    py-2.5 sm:py-3.5 md:py-4
+                  "
                 >
                   {/* sheen */}
                   <div
@@ -68,13 +67,13 @@ export default function ServicePage({ params }) {
                     </h1>
                   </div>
                 </div>
-              </div>{" "}
+              </div>
               {/* close: skew container */}
-            </div>{" "}
+            </div>
             {/* close: inline-block wrapper */}
-          </div>{" "}
+          </div>
           {/* close: breakout wrapper */}
-        </div>{" "}
+        </div>
         {/* close: inner container */}
       </section>
 
@@ -121,7 +120,7 @@ export default function ServicePage({ params }) {
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* FAQ (pass SSR snapshot → prevents hydration mismatch) */}
       <FAQSection faqs={service.faqs} />
     </div>
   );

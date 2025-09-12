@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
 
 export default function AnimatedSwapButton({
   href,
   onClick,
   children = "Contact Us",
-  arrow = "»",
   baseColor = "#EDF900",
   hoverColor = "#22c55e",
   size = "md",
@@ -43,11 +43,11 @@ export default function AnimatedSwapButton({
     <motion.span
       layout
       transition={{ type: "spring", stiffness: 260, damping: 26 }}
-      className={`grid size-6 place-items-center rounded-md bg-black/85 text-white ${
+      className={`grid size-6 place-items-center ${
         hovered ? "order-1" : "order-2"
       }`}
     >
-      {arrow}
+      <MdOutlineKeyboardDoubleArrowRight size={24} className="text-[#262626]" />
     </motion.span>
   );
 

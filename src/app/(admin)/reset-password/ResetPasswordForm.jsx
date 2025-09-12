@@ -10,19 +10,36 @@ import { apiFetch } from "@/utils/api";
 
 export default function ResetPasswordForm({ searchParams }) {
   const router = useRouter();
-  const email = searchParams?.email ?? "";
-  const token = searchParams?.token ?? searchParams?.resetToken ?? "";
+  const emailFromUrl = searchParams?.email ?? "";
+  const tokenFromUrl = searchParams?.token ?? searchParams?.resetToken ?? "";
 
-  const [resetToken, setResetToken] = useState(token || "");
+  const [email, setEmail] = useState(emailFromUrl || "");
+  const [resetToken, setResetToken] = useState(tokenFromUrl || "");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Load from session if not in URL; save if it is.
   useEffect(() => {
-    if (!resetToken && typeof window !== "undefined") {
-      const saved = sessionStorage.getItem("resetToken");
-      if (saved) setResetToken(saved);
+    if (typeof window === "undefined") return;
+    if (!emailFromUrl) {
+      const savedEmail = sessionStorage.getItem("resetEmail");
+      if (savedEmail) setEmail(savedEmail);
+    } else {
+      sessionStorage.setItem("resetEmail", emailFromUrl);
+      setEmail(emailFromUrl);
     }
-  }, [resetToken]);
+  }, [emailFromUrl]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!tokenFromUrl) {
+      const savedToken = sessionStorage.getItem("resetToken");
+      if (savedToken) setResetToken(savedToken);
+    } else {
+      sessionStorage.setItem("resetToken", tokenFromUrl);
+      setResetToken(tokenFromUrl);
+    }
+  }, [tokenFromUrl]);
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -30,6 +47,8 @@ export default function ResetPasswordForm({ searchParams }) {
     const form = new FormData(e.currentTarget);
     const newPassword = form.get("newPassword")?.toString().trim();
     const confirmPassword = form.get("confirmPassword")?.toString().trim();
+
+    console.log(email, resetToken, newPassword, confirmPassword);
 
     if (!email)
       return setError("Missing email. Please restart the reset flow.");
@@ -43,6 +62,10 @@ export default function ResetPasswordForm({ searchParams }) {
       setLoading(true);
       await apiFetch("/auth/reset-password", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify({ email, resetToken, newPassword }),
       });
       if (typeof window !== "undefined") {

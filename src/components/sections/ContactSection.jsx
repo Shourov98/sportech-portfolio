@@ -100,7 +100,7 @@ export default function ContactSection() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Title */}
         <motion.h2
-          className="text-center font-bold pb-5 text-[#EDF900] tracking-tight text-[clamp(32px,5.6vw,64px)] leading-[1.15]"
+          className="text-center font-bold pb-5 lg:pb-10 text-[#EDF900] tracking-tight text-[clamp(32px,5.6vw,64px)] leading-[1.15]"
           variants={downIn}
           initial="hidden"
           whileInView="show"
