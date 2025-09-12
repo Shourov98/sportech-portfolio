@@ -40,7 +40,7 @@ export default function HeroSection() {
         />
       </div>
 
-      <section className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-28 md:pt-36">
+      <section className="relative z-10 mx-auto max-w-full lg:max-w-7xl px-4 md:px-6 lg:px-8 pt-10 md:pt-28 lg:pt-28">
         <div className="grid grid-cols-1 gap-10">
           {/* Left copy */}
           <motion.div
@@ -51,7 +51,7 @@ export default function HeroSection() {
           >
             <motion.h1
               variants={item}
-              className="text-[40px] text-white sm:text-5xl lg:text-[56px] font-bold leading-[1.1]"
+              className="text-[40px] text-white text-3xl md:text-5xl lg:text-[56px] font-bold leading-[1.1]"
             >
               Technology Serving Sports Innovative <br /> Solutions and
               Exceptional Experiences
@@ -59,7 +59,7 @@ export default function HeroSection() {
 
             <motion.p
               variants={item}
-              className="mt-6 text-base leading-7 text-white/80 sm:text-lg"
+              className="mt-2 md:mt-4 lg:mt-6 text-base leading-7 text-white/80 text-md md:text-lg lg:text-xl"
             >
               Welcome to Sportech, a leading company in delivering advanced
               digital solutions to the sports industry. We develop innovative
