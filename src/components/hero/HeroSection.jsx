@@ -79,14 +79,14 @@ export default function HeroSection() {
           </motion.div>
 
           {/* Globe BELOW the text, centered and responsive */}
-          <div className="relative mx-auto w-[320px] h-[320px] sm:h-[420px] md:w-[540px] md:h-[540px] lg:w-[680px] lg:h-[680px]">
+          <div className="relative mx-auto w-[320px] h-[370px] sm:h-[380px] md:w-[540px] md:h-[540px] lg:w-[680px] lg:h-[680px]">
             {/* Keep it above the bg and not clipped */}
             {/* Globe BELOW the text, centered and responsive */}
             <div
               className="
                 relative mx-auto z-20 overflow-visible
-                w-[82vw] h-[82vw]              /* phones: big, fully visible */
-                sm:w-[420px] sm:h-[420px]
+                w-[82vw] h-[80vw]              /* phones: big, fully visible */
+                sm:w-[420px] sm:h-[380px]
                 md:w-[560px] md:h-[560px]
                 lg:w-[800px] lg:h-[800px]      /* bigger on large screens */
               "
