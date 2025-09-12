@@ -4,6 +4,16 @@ import { useEffect, useMemo, useState } from "react";
 import { authFetch } from "@/utils/api";
 
 /* --------- helpers --------- */
+// keep words intact where possible; cap length and add ellipsis
+const truncate = (str = "", max = 100) => {
+  const s = String(str).trim();
+  if (s.length <= max) return s;
+  const cut = s.slice(0, max);
+  // try not to cut the last word
+  const soft = cut.replace(/\s+\S*$/, "");
+  return (soft.length >= max * 0.6 ? soft : cut) + "…";
+};
+
 const makeKey = (p, i) =>
   p.id || p._id || p.slug || p.uuid || p.createdAt || `partner-${i}`;
 
@@ -161,7 +171,7 @@ export default function PartnerManager() {
                 className="group overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-[0_12px_40px_rgba(0,0,0,0.25)]"
               >
                 {/* Large logo / cover area */}
-                <div className="relative w-full aspect-[4/3] bg-white/10">
+                <div className="relative w-full aspect-[4/3] bg-white/80">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   {p.logo ? (
                     <img
@@ -198,7 +208,7 @@ export default function PartnerManager() {
                         Short description
                       </p>
                       <p className="mt-1 text-white">
-                        {p.short_description ?? p.shortDesc}
+                        {truncate(p.short_description ?? p.shortDesc, 80)}
                       </p>
                     </div>
                   )}
@@ -209,7 +219,7 @@ export default function PartnerManager() {
                         Description
                       </p>
                       <p className="mt-1 whitespace-pre-line text-white/90">
-                        {p.description}
+                        {truncate(p.description, 150)}
                       </p>
                     </div>
                   )}
