@@ -37,7 +37,7 @@ export default function ValuesSection() {
   return (
     <section
       id="values"
-      className="relative mx-auto max-w-full bg-[#262626] px-4 sm:px-6 lg:px-8 py-14 md:py-6 lg:py-8"
+      className="relative mx-auto max-w-full bg-[#262626] px-4 sm:px-6 lg:px-8 py-4 md:py-6 lg:py-8"
     >
       {/* Title */}
       <motion.h2
