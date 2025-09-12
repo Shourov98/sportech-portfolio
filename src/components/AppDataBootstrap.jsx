@@ -7,7 +7,7 @@ export default function AppDataBootstrap() {
   //console.log("fetchAll", fetchAll);
 
   useEffect(() => {
-    fetchAll().catch(() => {});
+    fetchAll({ force: true }).catch(() => {});
   }, [fetchAll]);
 
   return null;

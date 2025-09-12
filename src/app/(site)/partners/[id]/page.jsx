@@ -33,6 +33,8 @@ export default function PartnerDetailPage() {
     appgallery: p.appGallery || "#",
   };
 
+  console.log(p);
+
   return (
     <main className="bg-[#262626] text-white">
       {/* HERO */}
